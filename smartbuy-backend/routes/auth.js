@@ -269,7 +269,12 @@ router.post('/verify-otp', async (req, res) => {
 // @access  Private
 router.get('/profile', async (req, res) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const authHeader = req.header('Authorization');
+    console.log('Auth header received:', authHeader);
+    
+    const token = authHeader?.replace('Bearer ', '');
+    console.log('Token after Bearer removal:', token);
+    console.log('Token length:', token?.length);
     
     if (!token) {
       return res.status(401).json({
@@ -297,6 +302,23 @@ router.get('/profile', async (req, res) => {
 
   } catch (error) {
     console.error('Profile error:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token format'
+      });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token expired'
+      });
+    }
+    
     res.status(401).json({
       success: false,
       message: 'Invalid token'
