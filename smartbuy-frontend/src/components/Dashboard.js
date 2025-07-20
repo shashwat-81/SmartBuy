@@ -84,7 +84,7 @@ const Dashboard = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gradient">SmartBuy</h1>
-              <p className="text-xs text-gray-600 -mt-1 shimmer">Your Smart Shopping Companion</p>
+              {/* <p className="text-xs text-gray-600 -mt-1 shimmer">Your Smart Shopping Companion</p> */}
             </div>
           </div>
           <div className="nav-actions">
