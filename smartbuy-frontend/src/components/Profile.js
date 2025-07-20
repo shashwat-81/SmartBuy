@@ -15,6 +15,13 @@ const Profile = () => {
     phone: ''
   });
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [passwordFormData, setPasswordFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const navigate = useNavigate();
 
   // 1. Define the function
@@ -94,6 +101,76 @@ const Profile = () => {
       setError('Network error. Please try again.');
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleChangePassword = () => {
+    setPasswordFormData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setShowChangePasswordModal(true);
+  };
+
+  const handlePasswordInputChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+    setIsChangingPassword(true);
+    setError('');
+
+    // Validate passwords match
+    if (passwordFormData.newPassword !== passwordFormData.confirmPassword) {
+      setError('New passwords do not match');
+      setIsChangingPassword(false);
+      return;
+    }
+
+    // Validate password length
+    if (passwordFormData.newPassword.length < 6) {
+      setError('New password must be at least 6 characters long');
+      setIsChangingPassword(false);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/auth/change-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordFormData.currentPassword,
+          newPassword: passwordFormData.newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setShowChangePasswordModal(false);
+        alert('Password changed successfully!');
+        setPasswordFormData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      } else {
+        setError(data.message || 'Failed to change password');
+      }
+    } catch (error) {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -229,7 +306,7 @@ const Profile = () => {
               </svg>
               Edit Profile
             </button>
-            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}}>
+            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}} onClick={handleChangePassword}>
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
@@ -316,6 +393,86 @@ const Profile = () => {
                   disabled={isUpdating}
                 >
                   {isUpdating ? 'Updating...' : 'Update Profile'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {showChangePasswordModal && (
+        <div className="modal-overlay" onClick={(e) => e.target.classList.contains('modal-overlay') && setShowChangePasswordModal(false)}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 style={{color: '#2874f0', margin: 0, fontSize: '24px', fontWeight: 600}}>Change Password</h2>
+              <button 
+                className="modal-close-btn"
+                onClick={() => setShowChangePasswordModal(false)}
+                style={{background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666'}}
+              >
+                ×
+              </button>
+            </div>
+            <form onSubmit={handleUpdatePassword} className="edit-form">
+              {error && <div className="error-message">{error}</div>}
+              
+              <div className="form-group">
+                <label htmlFor="currentPassword">Current Password</label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  value={passwordFormData.currentPassword}
+                  onChange={handlePasswordInputChange}
+                  required
+                  placeholder="Enter your current password"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="newPassword">New Password</label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  value={passwordFormData.newPassword}
+                  onChange={handlePasswordInputChange}
+                  required
+                  minLength="6"
+                  placeholder="Enter your new password (min 6 characters)"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm New Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={passwordFormData.confirmPassword}
+                  onChange={handlePasswordInputChange}
+                  required
+                  minLength="6"
+                  placeholder="Confirm your new password"
+                />
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  onClick={() => setShowChangePasswordModal(false)}
+                  className="btn-cancel"
+                  disabled={isChangingPassword}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-update"
+                  disabled={isChangingPassword}
+                >
+                  {isChangingPassword ? 'Changing...' : 'Change Password'}
                 </button>
               </div>
             </form>
