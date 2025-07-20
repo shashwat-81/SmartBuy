@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../App';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -44,183 +45,242 @@ const Dashboard = () => {
     navigate('/login');
   };
 
+  const handleProfileClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Profile button clicked!', e);
+    console.log('Navigate function:', navigate);
+    try {
+      navigate('/profile');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <svg className="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <p className="text-gray-600">Loading your dashboard...</p>
+      <div className="min-h-screen loading-container flex items-center justify-center">
+        <div className="glass-card text-center p-12 fade-in">
+          <div className="loading-spinner">
+            <div className="animate-spin rounded-full h-20 w-20 border-4 border-blue-200 border-t-blue-600 mx-auto mb-8"></div>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-4 text-gradient">Loading Dashboard</h3>
+          <p className="text-gray-600 text-lg shimmer">Preparing your SmartBuy experience...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="dashboard-bg dashboard-container">
       {/* Navigation Header */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-indigo-600">SmartBuy</h1>
-              <span className="ml-4 text-sm text-gray-600">Dashboard</span>
+      <nav className="dashboard-nav">
+        <div className="nav-content">
+          <div className="nav-logo">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg hover-lift">
+              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+              </svg>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                Welcome, <span className="font-medium">{user?.name || user?.phone}</span>
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Logout
-              </button>
+            <div>
+              <h1 className="text-3xl font-bold text-gradient">SmartBuy</h1>
+              <p className="text-xs text-gray-600 -mt-1 shimmer">Your Smart Shopping Companion</p>
             </div>
+          </div>
+          <div className="nav-actions">
+            <button 
+              type="button"
+              onClick={handleProfileClick}
+              className="profile-btn flex items-center space-x-2 px-3 py-2 rounded transition-all duration-200 hover:bg-white hover:bg-opacity-10"
+              style={{ cursor: 'pointer', zIndex: 10 }}
+            >
+              <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <span className="text-white text-sm font-medium">Profile</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="btn-logout"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+      <main className="dashboard-main">
+        <div className="dashboard-content">
           {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-              {error}
+            <div className="mb-8 p-6 bg-red-50 border-l-4 border-red-400 text-red-700 rounded-r-xl shadow-lg glass-card fade-in">
+              <div className="flex items-center">
+                <svg className="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium">{error}</span>
+              </div>
             </div>
           )}
 
-          {/* Welcome Section */}
-          <div className="bg-white overflow-hidden shadow rounded-lg mb-6">
-            <div className="px-6 py-8 sm:px-8">
-              <div className="text-center">
-                <div className="mx-auto h-24 w-24 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-                  <svg className="h-12 w-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          {/* Welcome Hero Section */}
+          <div className="hero-section">
+            <div className="hero-content">
+              <div className="hero-text">
+                <div className="icon-container">
+                  <svg className="hero-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  Welcome to SmartBuy! 🎉
-                </h2>
-                <p className="text-gray-600 text-lg">
-                  You have successfully logged in to your account
+                <h1 className="hero-title">
+                  Welcome to <span className="brand-text">SmartBuy</span>
+                </h1>
+                <p className="hero-description">
+                  Your one-stop destination for all your shopping needs. Discover amazing products, great deals, and enjoy a seamless shopping experience.
                 </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Profile Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-6 py-5">
-                <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                  <svg className="h-5 w-5 text-indigo-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  Profile Information
-                </h3>
-                <div className="space-y-3">
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Name</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{profile?.name || user?.name || 'Not provided'}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Phone Number</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{profile?.phone || user?.phone}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                    <dd className="mt-1 text-sm text-gray-900">{profile?.email || user?.email || 'Not provided'}</dd>
-                  </div>
+                <div className="hero-buttons">
+                  <button className="btn-primary">Start Shopping</button>
+                  <button className="btn-secondary">Explore Categories</button>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-6 py-5">
-                <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                  <svg className="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="hero-visual">
+                <div className="visual-container">
+                  <svg className="visual-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
                   </svg>
-                  Account Status
-                </h3>
-                <div className="space-y-3">
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Status</dt>
-                    <dd className="mt-1">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Active
-                      </span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Registration Date</dt>
-                    <dd className="mt-1 text-sm text-gray-900">
-                      {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString() : 'Today'}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Authentication</dt>
-                    <dd className="mt-1">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        OTP Verified
-                      </span>
-                    </dd>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="px-6 py-5">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <svg className="h-5 w-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="card">
+            <div className="card-header">
+              <div className="card-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Quick Actions
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors">
-                  <svg className="h-8 w-8 text-indigo-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </div>
+              <div>
+                <h3 className="card-title">Quick Actions</h3>
+                <p className="card-subtitle">Access your favorite features instantly</p>
+              </div>
+            </div>
+            <div className="actions-grid">
+              <div className="action-card">
+                <div className="action-icon shopping">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-900">Shop Now</span>
-                </button>
-                
-                <button className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors">
-                  <svg className="h-8 w-8 text-indigo-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </div>
+                <h4 className="action-title">Shop Now</h4>
+                <p className="action-description">Explore our latest products</p>
+              </div>
+              
+              <div className="action-card">
+                <div className="action-icon orders">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-900">Orders</span>
-                </button>
-                
-                <button className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors">
-                  <svg className="h-8 w-8 text-indigo-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </div>
+                <h4 className="action-title">My Orders</h4>
+                <p className="action-description">Track your purchases</p>
+              </div>
+              
+              <div className="action-card">
+                <div className="action-icon wishlist">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-900">Wishlist</span>
-                </button>
-                
-                <button className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-colors">
-                  <svg className="h-8 w-8 text-indigo-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </div>
+                <h4 className="action-title">Wishlist</h4>
+                <p className="action-description">Saved for later</p>
+              </div>
+              
+              <div className="action-card">
+                <div className="action-icon settings">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span className="text-sm font-medium text-gray-900">Settings</span>
-                </button>
+                </div>
+                <h4 className="action-title">Settings</h4>
+                <p className="action-description">Manage your account</p>
               </div>
             </div>
           </div>
 
-          {/* Footer Message */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-500 text-sm">
-              🎯 Your SmartBuy journey starts here! Explore our features and enjoy secure shopping.
-            </p>
+          {/* Stats Section */}
+          <div className="cards-grid stats-grid">
+            <div className="stat-card">
+              <div className="stat-content">
+                <div className="stat-info">
+                  <div className="stat-label">Total Orders</div>
+                  <div className="stat-value">0</div>
+                  <div className="stat-description">Get started by placing your first order!</div>
+                </div>
+                <div className="stat-icon orders">
+                  <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-content">
+                <div className="stat-info">
+                  <div className="stat-label">Total Spent</div>
+                  <div className="stat-value">₹0</div>
+                  <div className="stat-description">Start shopping to see your spending!</div>
+                </div>
+                <div className="stat-icon spending">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-content">
+                <div className="stat-info">
+                  <div className="stat-label">Saved Items</div>
+                  <div className="stat-value">0</div>
+                  <div className="stat-description">Items in your wishlist</div>
+                </div>
+                <div className="stat-icon wishlist">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Welcome Message */}
+          <div className="card welcome-card">
+            <div className="welcome-content">
+              <div className="welcome-icon">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </div>
+              <h4 className="welcome-title">Welcome to SmartBuy!</h4>
+              <p className="welcome-description">
+                🎯 Your SmartBuy journey starts here! Explore our amazing features, discover great deals, 
+                and enjoy a secure and personalized shopping experience tailored just for you.
+              </p>
+              <button className="btn-primary">Start Your Shopping Journey</button>
+              <div className="feature-tags">
+                <span className="feature-tag">✨ Premium Quality</span>
+                <span className="feature-tag">🚚 Fast Delivery</span>
+                <span className="feature-tag">🔒 Secure Shopping</span>
+                <span className="feature-tag">💰 Best Prices</span>
+              </div>
+            </div>
           </div>
         </div>
       </main>
