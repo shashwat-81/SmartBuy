@@ -15,12 +15,12 @@
 }
 
 .nav-content {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 32px;
 }
 
 .back-btn {
@@ -61,12 +61,12 @@
 }
 
 .filters-content {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 16px 24px;
+  padding: 16px 32px;
   flex-wrap: wrap;
 }
 
@@ -193,12 +193,12 @@
 }
 
 .filter-row {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 0 24px;
+  padding: 0 32px;
   flex-wrap: wrap;
 }
 
@@ -284,12 +284,12 @@
 }
 
 .compare-content {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
+  padding: 12px 32px;
   color: #2ecc71;
   font-weight: 500;
 }
@@ -323,21 +323,37 @@
 
 /* Products Grid */
 .products-grid {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 32px;
 }
 
 .products-grid.grid-view {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 28px;
+}
+
+/* Responsive grid adjustments for better space utilization */
+@media (min-width: 1400px) {
+  .products-grid.grid-view {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .products-grid.grid-view {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
 }
 
 .products-grid.list-view {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  max-width: 100%;
 }
 
 /* Enhanced Product Card */
@@ -972,7 +988,7 @@
   }
 
   .products-grid.grid-view {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     padding: 20px 16px;
   }
