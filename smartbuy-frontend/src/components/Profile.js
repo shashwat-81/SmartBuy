@@ -10,6 +10,26 @@ const Profile = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // 1. Define the function
+  const fetchProfile = async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:5000/api/auth/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setProfile(data.data.user); // or setProfile(data) depending on your backend response
+      setUser(data.data.user); // Assuming the user data is nested under data.user
+    } else {
+      setError('Failed to load profile data');
+    }
+    setLoading(false);
+  };
+
+  // 2. Call it in useEffect
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -18,29 +38,6 @@ const Profile = () => {
     }
     fetchProfile();
   }, [navigate]);
-
-  const fetchProfile = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
-        setUser(data);
-      } else {
-        setError('Failed to load profile data');
-      }
-    } catch (err) {
-      setError('Failed to load profile data');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
