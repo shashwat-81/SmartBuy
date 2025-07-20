@@ -67,8 +67,8 @@ const Register = () => {
       if (response.data.success) {
         const { user, token } = response.data.data;
         login(user, token);
-        setSuccess('Account verified successfully! Redirecting to dashboard...');
-        setTimeout(() => navigate('/dashboard'), 2000);
+        setSuccess('Account verified successfully! Redirecting to explore...');
+        setTimeout(() => navigate('/categories'), 2000);
       }
     } catch (err) {
       setError(
