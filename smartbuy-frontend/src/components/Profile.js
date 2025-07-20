@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
+import './Dashboard.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -10,25 +11,23 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/');
+      navigate('/login');
       return;
     }
-
     fetchProfile();
   }, [navigate]);
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('http://localhost:5000/api/profile', {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/auth/profile', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-
       if (response.ok) {
         const data = await response.json();
         setProfile(data);
@@ -37,7 +36,6 @@ const Profile = () => {
         setError('Failed to load profile data');
       }
     } catch (err) {
-      console.error('Error fetching profile:', err);
       setError('Failed to load profile data');
     } finally {
       setLoading(false);
@@ -45,13 +43,13 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    navigate('/');
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   if (loading) {
     return (
-      <div className="profile-loading">
+      <div className="profile-loading dashboard-bg" style={{minHeight: '100vh'}}>
         <div className="loading-spinner"></div>
         <p>Loading profile...</p>
       </div>
@@ -59,152 +57,136 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-container">
-      {/* Header */}
-      <div className="profile-header">
-        <button 
-          className="back-button" 
-          onClick={() => navigate('/dashboard')}
-        >
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Dashboard
-        </button>
-        
-        <div className="profile-header-content">
-          <div className="profile-avatar">
-            {profile?.name ? profile.name.charAt(0).toUpperCase() : 'U'}
-          </div>
-          <div>
-            <h1 className="profile-title">My Profile</h1>
-            <p className="profile-subtitle">Manage your account information</p>
+    <div className="dashboard-bg" style={{minHeight: '100vh'}}>
+      {/* Top Bar */}
+      <div className="dashboard-nav" style={{marginBottom: 32}}>
+        <div className="nav-content" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <button
+            onClick={() => navigate('/dashboard')}
+            style={{
+              background: 'none',
+              border: 'none',
+              outline: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              padding: 0,
+              height: 32
+            }}
+            aria-label="Back to Dashboard"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div className="nav-logo" style={{gap: 10, display: 'flex', alignItems: 'center'}}>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={28} height={28}>
+              <circle cx="12" cy="12" r="14" stroke="#fff" strokeWidth="2" fill="#2874f0" />
+              <path stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            My Profile
           </div>
         </div>
-
-        <button className="logout-button" onClick={handleLogout}>
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          Logout
-        </button>
       </div>
-
-      {/* Profile Content */}
-      <div className="profile-content">
-        {error && (
-          <div className="error-message">
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            {error}
+      {/* Profile Card */}
+      <div style={{maxWidth: 400, margin: '0 auto', position: 'relative', zIndex: 1}}>
+        {/* Floating Avatar */}
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          top: -48,
+          transform: 'translateX(-50%)',
+          zIndex: 2,
+        }}>
+          <div style={{
+            width: 96,
+            height: 96,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #2874f0 0%, #1e5bb8 100%)',
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 40,
+            fontWeight: 700,
+            border: '5px solid #fff',
+            boxShadow: '0 4px 16px 0 rgba(40,116,240,0.15)'
+          }}>
+            {profile?.name ? profile.name.charAt(0).toUpperCase() : 'U'}
           </div>
-        )}
-
-        <div className="profile-grid">
-          {/* Profile Information Card */}
-          <div className="profile-card">
-            <div className="card-header">
-              <div className="card-icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="card-title">Personal Information</h3>
-                <p className="card-subtitle">Your basic account details</p>
-              </div>
+        </div>
+        <div className="card" style={{
+          padding: '72px 32px 32px 32px',
+          overflow: 'hidden',
+          border: '1px solid #e0e0e0',
+          borderRadius: 18,
+          boxShadow: '0 8px 32px 0 rgba(40,116,240,0.10)',
+          marginTop: 48,
+          background: '#fff',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <h2 style={{margin: '0 0 4px 0', color: '#212121', fontWeight: 600, fontSize: 24, textAlign: 'center'}}>{profile?.name || user?.name || 'User'}</h2>
+          <div style={{color: '#878787', fontSize: 15, marginBottom: 18, textAlign: 'center'}}>Manage your account information</div>
+          {error && (
+            <div className="error-message" style={{background: '#fed7d7', color: '#c53030', padding: 16, borderRadius: 8, margin: 16, textAlign: 'center'}}>
+              <svg fill="currentColor" viewBox="0 0 20 20" width={20} height={20} style={{marginRight: 8, verticalAlign: 'middle'}}>
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {error}
             </div>
-            <div className="info-grid">
-              <div className="info-item">
+          )}
+          {/* Info Section */}
+          <div className="info-grid" style={{padding: 0, display: 'grid', gridTemplateColumns: '1fr', gap: 20, marginBottom: 28}}>
+            <div className="info-item" style={{display: 'flex', alignItems: 'center', gap: 12}}>
+              <span style={{color: '#2874f0', display: 'flex', alignItems: 'center'}}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              </span>
+              <div>
                 <div className="info-label">Full Name</div>
                 <div className="info-value">{profile?.name || user?.name || 'Not provided'}</div>
               </div>
-              <div className="info-item">
-                <div className="info-label">Phone Number</div>
-                <div className="info-value">{profile?.phone || user?.phone}</div>
-              </div>
-              <div className="info-item">
+            </div>
+            <div className="info-item" style={{display: 'flex', alignItems: 'center', gap: 12}}>
+              <span style={{color: '#2874f0', display: 'flex', alignItems: 'center'}}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              </span>
+              <div>
                 <div className="info-label">Email</div>
                 <div className="info-value">{profile?.email || user?.email || 'Not provided'}</div>
               </div>
-              <div className="info-item">
-                <div className="info-label">Member Since</div>
-                <div className="info-value">
-                  {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString() : 'Today'}
-                </div>
-              </div>
             </div>
-          </div>
-
-          {/* Account Status Card */}
-          <div className="profile-card">
-            <div className="card-header">
-              <div className="card-icon status-icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
+            <div className="info-item" style={{display: 'flex', alignItems: 'center', gap: 12}}>
+              <span style={{color: '#2874f0', display: 'flex', alignItems: 'center'}}>
+                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 5h2M7 5h2M11 5h2M15 5h2M19 5h2M3 10h2m4 0h2m4 0h2m4 0h2M3 15h2m4 0h2m4 0h2m4 0h2" /></svg>
+              </span>
               <div>
-                <h3 className="card-title">Account Status</h3>
-                <p className="card-subtitle">Your verification status</p>
-              </div>
-            </div>
-            <div className="status-container">
-              <div className="status-item active">
-                <div className="status-icon-container">
-                  <svg fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="status-badge active-badge">✓ Account Active</span>
-                <p className="status-text">Your account is fully verified and active</p>
-              </div>
-              <div className="status-item verified">
-                <span className="status-badge verified-badge">✓ Phone Verified</span>
+                <div className="info-label">Phone</div>
+                <div className="info-value">{profile?.phone || user?.phone || 'Not provided'}</div>
               </div>
             </div>
           </div>
-
-          {/* Account Settings Card */}
-          <div className="profile-card">
-            <div className="card-header">
-              <div className="card-icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="card-title">Account Settings</h3>
-                <p className="card-subtitle">Manage your preferences</p>
-              </div>
-            </div>
-            <div className="settings-grid">
-              <button className="setting-item">
-                <div className="setting-icon">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </div>
-                <div>
-                  <div className="setting-label">Edit Profile</div>
-                  <div className="setting-description">Update your information</div>
-                </div>
-              </button>
-              <button className="setting-item">
-                <div className="setting-icon">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <div>
-                  <div className="setting-label">Change Password</div>
-                  <div className="setting-description">Update your password</div>
-                </div>
-              </button>
-            </div>
+          {/* Actions */}
+          <div style={{display: 'flex', gap: 12, marginBottom: 12}}>
+            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}}>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              Edit Profile
+            </button>
+            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}}>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Change Password
+            </button>
           </div>
+          <button className="btn-primary" style={{width: '100%', background: '#e53e3e', color: '#fff', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 8, height: 44, fontSize: 16}} onClick={handleLogout}>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </button>
         </div>
       </div>
     </div>
