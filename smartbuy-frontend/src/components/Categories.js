@@ -10,48 +10,57 @@ const Categories = () => {
   const carouselItems = [
     {
       id: 1,
-      title: "Summer Mega Sale",
+      title: "Summer Electronics Sale",
       subtitle: "Up to 70% OFF",
-      description: "Don't miss out on the biggest sale of the year!",
-      image: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=800&h=400&fit=crop&crop=center",
-      buttonText: "Shop Now",
+      description: "Latest smartphones, laptops & headphones at unbeatable prices!",
+      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop&crop=center",
+      buttonText: "Shop Electronics",
       color: "#FF6B35"
     },
     {
       id: 2,
-      title: "Electronics Bonanza",
-      subtitle: "Starting at ₹999",
-      description: "Latest smartphones, laptops & gadgets at unbeatable prices",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=400&fit=crop&crop=center",
-      buttonText: "Explore Deals",
+      title: "Fashion Week Special",
+      subtitle: "Buy 2 Get 1 FREE",
+      description: "Trendy clothing, shoes & accessories from top brands",
+      image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=400&fit=crop&crop=center",
+      buttonText: "Shop Fashion",
       color: "#4ECDC4"
     },
     {
       id: 3,
-      title: "Fashion Festival",
-      subtitle: "Buy 2 Get 1 FREE",
-      description: "Trendy outfits for every occasion",
-      image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=400&fit=crop&crop=center",
-      buttonText: "Shop Fashion",
+      title: "Home Makeover Sale",
+      subtitle: "Flat 50% OFF",
+      description: "Transform your space with furniture, decor & appliances",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=400&fit=crop&crop=center",
+      buttonText: "Shop Home",
       color: "#45B7D1"
     },
     {
       id: 4,
-      title: "Home Essentials",
-      subtitle: "Flat 50% OFF",
-      description: "Transform your space with our home collection",
-      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=400&fit=crop&crop=center",
-      buttonText: "Decorate Now",
+      title: "Fitness Revolution",
+      subtitle: "Starting at ₹499",
+      description: "Premium gym equipment, sportswear & fitness accessories",
+      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=400&fit=crop&crop=center",
+      buttonText: "Get Fit Now",
       color: "#96CEB4"
     },
     {
       id: 5,
-      title: "Flash Sale",
-      subtitle: "Limited Time Only",
-      description: "24 hours left! Grab your favorites before they're gone",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=400&fit=crop&crop=center",
-      buttonText: "Hurry Up!",
+      title: "Beauty & Wellness Fair",
+      subtitle: "Up to 60% OFF",
+      description: "Premium skincare, makeup & wellness products",
+      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=400&fit=crop&crop=center",
+      buttonText: "Shop Beauty",
       color: "#FECA57"
+    },
+    {
+      id: 6,
+      title: "Mega Book Sale",
+      subtitle: "3 Books for ₹999",
+      description: "Bestsellers, educational books & digital content",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=400&fit=crop&crop=center",
+      buttonText: "Read More",
+      color: "#A8E6CF"
     }
   ];
 
@@ -80,65 +89,129 @@ const Categories = () => {
     {
       id: 1,
       name: 'Electronics',
-      description: 'Latest gadgets and electronic devices',
-      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop&crop=center',
-      items: 1247,
+      description: 'Latest smartphones, laptops, and gadgets',
+      image: 'https://images.unsplash.com/photo-1498049860654-af1a5c566876?w=400&h=300&fit=crop&crop=center',
+      items: 2847,
       trending: true
     },
     {
       id: 2,
-      name: 'Fashion',
-      description: 'Trendy clothing and accessories',
-      image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop&crop=center',
-      items: 2834,
+      name: 'Fashion & Clothing',
+      description: 'Trendy apparel, shoes, and accessories',
+      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center',
+      items: 4521,
       trending: true
     },
     {
       id: 3,
-      name: 'Home & Garden',
-      description: 'Everything for your home and garden',
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&crop=center',
-      items: 1892,
+      name: 'Home & Kitchen',
+      description: 'Furniture, appliances, and home decor',
+      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center',
+      items: 3298,
       trending: false
     },
     {
       id: 4,
-      name: 'Sports',
-      description: 'Sports equipment and fitness gear',
+      name: 'Sports & Fitness',
+      description: 'Gym equipment, sportswear, and outdoor gear',
       image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center',
-      items: 756,
+      items: 1876,
       trending: true
     },
     {
       id: 5,
-      name: 'Books',
-      description: 'Books, e-books, and educational materials',
-      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop&crop=center',
-      items: 3421,
+      name: 'Books & Education',
+      description: 'Books, courses, and learning materials',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=center',
+      items: 5643,
       trending: false
     },
     {
       id: 6,
-      name: 'Beauty',
-      description: 'Cosmetics and personal care products',
-      image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop&crop=center',
-      items: 1634,
+      name: 'Beauty & Personal Care',
+      description: 'Skincare, makeup, and wellness products',
+      image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=300&fit=crop&crop=center',
+      items: 2134,
       trending: true
     },
     {
       id: 7,
       name: 'Automotive',
-      description: 'Car accessories and automotive parts',
-      image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&h=300&fit=crop&crop=center',
-      items: 543,
+      description: 'Car accessories, parts, and maintenance',
+      image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop&crop=center',
+      items: 987,
       trending: false
     },
     {
       id: 8,
       name: 'Toys & Games',
-      description: 'Fun toys and games for all ages',
+      description: 'Educational toys, games, and entertainment',
       image: 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=400&h=300&fit=crop&crop=center',
-      items: 987,
+      items: 1456,
+      trending: true
+    },
+    {
+      id: 9,
+      name: 'Health & Wellness',
+      description: 'Supplements, medical devices, and health products',
+      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=center',
+      items: 892,
+      trending: true
+    },
+    {
+      id: 10,
+      name: 'Pet Supplies',
+      description: 'Food, toys, and accessories for your pets',
+      image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop&crop=center',
+      items: 734,
+      trending: false
+    },
+    {
+      id: 11,
+      name: 'Office & Stationery',
+      description: 'Office supplies, furniture, and stationery',
+      image: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=400&h=300&fit=crop&crop=center',
+      items: 1243,
+      trending: false
+    },
+    {
+      id: 12,
+      name: 'Food & Groceries',
+      description: 'Fresh produce, snacks, and gourmet foods',
+      image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop&crop=center',
+      items: 6789,
+      trending: true
+    },
+    {
+      id: 13,
+      name: 'Music & Instruments',
+      description: 'Musical instruments, audio equipment, and accessories',
+      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop&crop=center',
+      items: 567,
+      trending: false
+    },
+    {
+      id: 14,
+      name: 'Travel & Luggage',
+      description: 'Suitcases, backpacks, and travel accessories',
+      image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop&crop=center',
+      items: 445,
+      trending: true
+    },
+    {
+      id: 15,
+      name: 'Garden & Outdoor',
+      description: 'Plants, tools, and outdoor furniture',
+      image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&crop=center',
+      items: 1123,
+      trending: false
+    },
+    {
+      id: 16,
+      name: 'Baby & Kids',
+      description: 'Baby care, children clothing, and kids furniture',
+      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&crop=center',
+      items: 2156,
       trending: true
     }
   ];
