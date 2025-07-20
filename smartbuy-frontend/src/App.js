@@ -4,6 +4,11 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
+import Products from './components/Products';
+import Categories from './components/Categories';
+import Orders from './components/Orders';
+import Wishlist from './components/Wishlist';
+import Cart from './components/Cart';
 import './App.css';
 
 // Simple authentication context
@@ -114,6 +119,46 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/products" 
+              element={
+                <ProtectedRoute>
+                  <Products />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/categories" 
+              element={
+                <ProtectedRoute>
+                  <Categories />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/orders" 
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/wishlist" 
+              element={
+                <ProtectedRoute>
+                  <Wishlist />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/cart" 
+              element={
+                <ProtectedRoute>
+                  <Cart />
                 </ProtectedRoute>
               } 
             />

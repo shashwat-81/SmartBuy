@@ -16,6 +16,7 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const shopRoutes = require('./routes/shop');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/shop', shopRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
