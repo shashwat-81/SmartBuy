@@ -8,6 +8,13 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [isUpdating, setIsUpdating] = useState(false);
   const navigate = useNavigate();
 
   // 1. Define the function
@@ -38,6 +45,57 @@ const Profile = () => {
     }
     fetchProfile();
   }, [navigate]);
+
+  const handleEditProfile = () => {
+    setEditFormData({
+      name: profile?.name || user?.name || '',
+      email: profile?.email || user?.email || '',
+      phone: profile?.phone || user?.phone || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    setError('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editFormData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setProfile(data.data.user);
+        setUser(data.data.user);
+        setShowEditModal(false);
+        // Show success message (optional)
+        alert('Profile updated successfully!');
+      } else {
+        setError(data.message || 'Failed to update profile');
+      }
+    } catch (error) {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -165,7 +223,7 @@ const Profile = () => {
           </div>
           {/* Actions */}
           <div style={{display: 'flex', gap: 12, marginBottom: 12}}>
-            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}}>
+            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}} onClick={handleEditProfile}>
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
@@ -186,6 +244,84 @@ const Profile = () => {
           </button>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={(e) => e.target.classList.contains('modal-overlay') && setShowEditModal(false)}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 style={{color: '#2874f0', margin: 0, fontSize: '24px', fontWeight: 600}}>Edit Profile</h2>
+              <button 
+                className="modal-close-btn"
+                onClick={() => setShowEditModal(false)}
+                style={{background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666'}}
+              >
+                ×
+              </button>
+            </div>
+            <form onSubmit={handleUpdateProfile} className="edit-form">
+              {error && <div className="error-message">{error}</div>}
+              
+              <div className="form-group">
+                <label htmlFor="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={editFormData.name}
+                  onChange={handleEditInputChange}
+                  required
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={editFormData.email}
+                  onChange={handleEditInputChange}
+                  required
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={editFormData.phone}
+                  onChange={handleEditInputChange}
+                  required
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div className="form-actions">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="btn-cancel"
+                  disabled={isUpdating}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-update"
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? 'Updating...' : 'Update Profile'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

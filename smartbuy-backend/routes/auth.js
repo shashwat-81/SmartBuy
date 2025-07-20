@@ -326,4 +326,31 @@ router.get('/profile', async (req, res) => {
   }
 });
 
+// @route   PUT /api/auth/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', async (req, res) => {
+  try {
+    const authHeader = req.header('Authorization');
+    const token = authHeader?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    // Only allow updating certain fields
+    const { name, email, phone } = req.body;
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+
+    await user.save();
+
+    res.status(200).json({ success: true, data: { user: user.toJSON() } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error during profile update' });
+  }
+});
+
 module.exports = router;
