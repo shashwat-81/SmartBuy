@@ -88,6 +88,12 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* Navigation */
 .dashboard-nav {
   background: rgba(255, 255, 255, 0.1);
@@ -98,6 +104,8 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  width: 100%;
+  overflow: visible;
 }
 
 .nav-content {
@@ -109,6 +117,70 @@
   width: 100%;
   padding: 0 20px;
   height: 56px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.nav-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.back-btn svg {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.back-btn:hover svg {
+  transform: translateX(-2px);
+}
+
+.btn-text {
+  font-weight: 500;
+}
+
+/* Mobile responsive for back button */
+@media (max-width: 640px) {
+  .back-btn .btn-text {
+    display: none;
+  }
+  
+  .back-btn {
+    padding: 10px;
+    gap: 0;
+  }
 }
 
 @media (min-width: 1536px) {
@@ -127,6 +199,9 @@
   font-size: 20px;
   text-decoration: none;
   cursor: pointer;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .nav-logo svg {
@@ -141,7 +216,9 @@
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  min-width: 0;
 }
 
 .nav-user-info {
@@ -724,6 +801,9 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: max-content;
 }
 
 .btn-logout:hover {
@@ -740,6 +820,9 @@
   transition: all 0.2s ease;
   position: relative;
   z-index: 10;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: max-content;
 }
 
 .profile-btn:hover {
@@ -1061,25 +1144,103 @@
   }
   
   .nav-content {
-    padding: 0 8px;
+    padding: 0 12px;
     height: 48px;
+    gap: 8px;
   }
   
   .nav-logo {
-    font-size: 18px;
-    gap: 8px;
+    font-size: 16px;
+    gap: 6px;
+  }
+  
+  .nav-logo h1 {
+    font-size: 20px !important;
   }
   
   .nav-actions {
     gap: 8px;
   }
   
+  .profile-btn {
+    padding: 6px 10px !important;
+  }
+  
+  .profile-btn span {
+    display: none;
+  }
+  
   .btn-logout {
     padding: 6px 12px;
     font-size: 12px;
+    min-width: max-content;
+    white-space: nowrap;
   }
   
   .card {
     padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-content {
+    padding: 0 8px;
+    height: 44px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  
+  .nav-logo {
+    font-size: 14px;
+    gap: 4px;
+  }
+  
+  .nav-logo h1 {
+    font-size: 18px !important;
+  }
+  
+  .nav-logo .w-12 {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+  
+  .nav-logo .w-7 {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+  
+  .nav-actions {
+    gap: 6px;
+  }
+  
+  .profile-btn {
+    padding: 4px 8px !important;
+    min-width: max-content;
+  }
+  
+  .profile-btn .w-8 {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+  
+  .profile-btn .w-5 {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+  
+  .btn-logout {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: max-content;
+    white-space: nowrap;
+  }
+  
+  .back-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .back-btn .btn-text {
+    font-size: 11px;
   }
 }

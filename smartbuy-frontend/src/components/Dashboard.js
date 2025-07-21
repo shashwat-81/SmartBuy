@@ -9,6 +9,12 @@ const Dashboard = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [stats, setStats] = useState({
+    orders: 0,
+    totalSpent: 0,
+    wishlistItems: 0,
+    cartItems: 0
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +43,78 @@ const Dashboard = () => {
       }
     };
 
+    const fetchUserStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
+        
+        // Initialize stats object
+        const newStats = {
+          orders: 0,
+          totalSpent: 0,
+          wishlistItems: 0,
+          cartItems: 0
+        };
+
+        // Fetch all data concurrently with better error handling
+        const promises = [
+          // Fetch wishlist data
+          axios.get('http://localhost:5000/api/shop/wishlist', { headers })
+            .then(response => {
+              console.log('Wishlist response:', response.data);
+              newStats.wishlistItems = response.data?.data?.length || response.data?.items?.length || 0;
+            })
+            .catch(err => {
+              console.log('Wishlist fetch error (using default):', err.response?.status || err.message);
+              newStats.wishlistItems = 0;
+            }),
+          
+          // Fetch cart data
+          axios.get('http://localhost:5000/api/shop/cart', { headers })
+            .then(response => {
+              console.log('Cart response:', response.data);
+              newStats.cartItems = response.data?.data?.length || response.data?.items?.length || 0;
+            })
+            .catch(err => {
+              console.log('Cart fetch error (using default):', err.response?.status || err.message);
+              newStats.cartItems = 0;
+            }),
+          
+          // Fetch orders data
+          axios.get('http://localhost:5000/api/shop/orders', { headers })
+            .then(response => {
+              console.log('Orders response:', response.data);
+              const orders = response.data?.data || response.data?.orders || [];
+              newStats.orders = orders.length || 0;
+              newStats.totalSpent = orders.reduce((total, order) => total + (order.totalAmount || order.total || 0), 0);
+            })
+            .catch(err => {
+              console.log('Orders fetch error (using default):', err.response?.status || err.message);
+              newStats.orders = 0;
+              newStats.totalSpent = 0;
+            })
+        ];
+
+        // Wait for all requests to complete
+        await Promise.all(promises);
+        
+        console.log('Final stats:', newStats);
+        setStats(newStats);
+
+      } catch (err) {
+        console.error('Error in fetchUserStats:', err);
+        // Keep default values on error
+        setStats({
+          orders: 0,
+          totalSpent: 0,
+          wishlistItems: 0,
+          cartItems: 0
+        });
+      }
+    };
+
     fetchProfile();
+    fetchUserStats();
   }, [logout, navigate]);
 
   const handleLogout = () => {
@@ -54,6 +131,17 @@ const Dashboard = () => {
       navigate('/profile');
     } catch (error) {
       console.error('Navigation error:', error);
+    }
+  };
+
+  // Navigation handlers for each action
+  const handleNavigation = (path) => {
+    try {
+      navigate(path);
+    } catch (error) {
+      console.error(`Navigation to ${path} failed:`, error);
+      // Fallback navigation
+      window.location.href = path;
     }
   };
 
@@ -76,6 +164,18 @@ const Dashboard = () => {
       {/* Navigation Header */}
       <nav className="dashboard-nav">
         <div className="nav-content">
+          <div className="nav-left">
+            <button
+              onClick={() => navigate('/categories')}
+              className="back-btn"
+              title="Back to Categories"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H6m0 0l6 6m-6-6l6-6" />
+              </svg>
+              <span className="btn-text">Categories</span>
+            </button>
+          </div>
           <div className="nav-logo">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg hover-lift">
               <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -141,8 +241,8 @@ const Dashboard = () => {
                   Your one-stop destination for all your shopping needs. Discover amazing products, great deals, and enjoy a seamless shopping experience.
                 </p>
                 <div className="hero-buttons">
-                  <button className="btn-primary" onClick={() => navigate('/products')}>Start Shopping</button>
-                  <button className="btn-secondary" onClick={() => navigate('/categories')}>Explore Categories</button>
+                  <button className="btn-primary" onClick={() => handleNavigation('/products')}>Start Shopping</button>
+                  <button className="btn-secondary" onClick={() => handleNavigation('/categories')}>Explore Categories</button>
                 </div>
               </div>
               <div className="hero-visual">
@@ -169,7 +269,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="actions-grid">
-              <div className="action-card" onClick={() => navigate('/products')} style={{cursor: 'pointer'}}>
+              <div className="action-card" onClick={() => handleNavigation('/products')} style={{cursor: 'pointer'}}>
                 <div className="action-icon shopping">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -179,7 +279,7 @@ const Dashboard = () => {
                 <p className="action-description">Explore our latest products</p>
               </div>
               
-              <div className="action-card" onClick={() => navigate('/orders')} style={{cursor: 'pointer'}}>
+              <div className="action-card" onClick={() => handleNavigation('/orders')} style={{cursor: 'pointer'}}>
                 <div className="action-icon orders">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -189,7 +289,7 @@ const Dashboard = () => {
                 <p className="action-description">Track your purchases</p>
               </div>
               
-              <div className="action-card" onClick={() => navigate('/wishlist')} style={{cursor: 'pointer'}}>
+              <div className="action-card" onClick={() => handleNavigation('/wishlist')} style={{cursor: 'pointer'}}>
                 <div className="action-icon wishlist">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -199,7 +299,7 @@ const Dashboard = () => {
                 <p className="action-description">Saved for later</p>
               </div>
               
-              <div className="action-card" onClick={() => navigate('/cart')} style={{cursor: 'pointer'}}>
+              <div className="action-card" onClick={() => handleNavigation('/cart')} style={{cursor: 'pointer'}}>
                 <div className="action-icon cart">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
@@ -209,7 +309,7 @@ const Dashboard = () => {
                 <p className="action-description">Review your items</p>
               </div>
               
-              <div className="action-card" onClick={() => navigate('/profile')} style={{cursor: 'pointer'}}>
+              <div className="action-card" onClick={() => handleNavigation('/profile')} style={{cursor: 'pointer'}}>
                 <div className="action-icon settings">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -224,12 +324,17 @@ const Dashboard = () => {
 
           {/* Stats Section */}
           <div className="cards-grid stats-grid">
-            <div className="stat-card">
+            <div className="stat-card" onClick={() => handleNavigation('/orders')} style={{cursor: 'pointer'}} title="View your orders">
               <div className="stat-content">
                 <div className="stat-info">
                   <div className="stat-label">Total Orders</div>
-                  <div className="stat-value">0</div>
-                  <div className="stat-description">Get started by placing your first order!</div>
+                  <div className="stat-value">{stats.orders}</div>
+                  <div className="stat-description">
+                    {stats.orders === 0 ? 
+                      "🛒 Ready to place your first order? Start shopping!" : 
+                      `You've successfully completed ${stats.orders} order${stats.orders !== 1 ? 's' : ''}!`
+                    }
+                  </div>
                 </div>
                 <div className="stat-icon orders">
                   <svg fill="currentColor" viewBox="0 0 20 20">
@@ -239,12 +344,17 @@ const Dashboard = () => {
               </div>
             </div>
             
-            <div className="stat-card">
+            <div className="stat-card" onClick={() => handleNavigation('/orders')} style={{cursor: 'pointer'}} title="View spending summary">
               <div className="stat-content">
                 <div className="stat-info">
                   <div className="stat-label">Total Spent</div>
-                  <div className="stat-value">₹0</div>
-                  <div className="stat-description">Start shopping to see your spending!</div>
+                  <div className="stat-value">₹{stats.totalSpent.toLocaleString('en-IN')}</div>
+                  <div className="stat-description">
+                    {stats.totalSpent === 0 ? 
+                      "💰 Start your shopping journey and discover amazing deals!" : 
+                      `You've invested ₹${stats.totalSpent.toLocaleString('en-IN')} in quality products!`
+                    }
+                  </div>
                 </div>
                 <div className="stat-icon spending">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,16 +364,41 @@ const Dashboard = () => {
               </div>
             </div>
             
-            <div className="stat-card">
+            <div className="stat-card" onClick={() => handleNavigation('/wishlist')} style={{cursor: 'pointer'}} title="View your wishlist">
               <div className="stat-content">
                 <div className="stat-info">
-                  <div className="stat-label">Saved Items</div>
-                  <div className="stat-value">0</div>
-                  <div className="stat-description">Items in your wishlist</div>
+                  <div className="stat-label">Wishlist Items</div>
+                  <div className="stat-value">{stats.wishlistItems}</div>
+                  <div className="stat-description">
+                    {stats.wishlistItems === 0 ? 
+                      "❤️ Save your favorite items to your wishlist!" : 
+                      `${stats.wishlistItems} item${stats.wishlistItems !== 1 ? 's' : ''} waiting for you!`
+                    }
+                  </div>
                 </div>
                 <div className="stat-icon wishlist">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div className="stat-card" onClick={() => handleNavigation('/cart')} style={{cursor: 'pointer'}} title="View your cart">
+              <div className="stat-content">
+                <div className="stat-info">
+                  <div className="stat-label">Cart Items</div>
+                  <div className="stat-value">{stats.cartItems}</div>
+                  <div className="stat-description">
+                    {stats.cartItems === 0 ? 
+                      "🛍️ Add some amazing products to your cart!" : 
+                      `${stats.cartItems} item${stats.cartItems !== 1 ? 's' : ''} ready for checkout!`
+                    }
+                  </div>
+                </div>
+                <div className="stat-icon cart">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
                   </svg>
                 </div>
               </div>
@@ -283,7 +418,7 @@ const Dashboard = () => {
                 🎯 Your SmartBuy journey starts here! Explore our amazing features, discover great deals, 
                 and enjoy a secure and personalized shopping experience tailored just for you.
               </p>
-              <button className="btn-primary" onClick={() => navigate('/products')}>Start Your Shopping Journey</button>
+              <button className="btn-primary" onClick={() => handleNavigation('/products')}>Start Your Shopping Journey</button>
               <div className="feature-tags">
                 <span className="feature-tag">✨ Premium Quality</span>
                 <span className="feature-tag">🚚 Fast Delivery</span>

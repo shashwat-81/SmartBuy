@@ -1150,12 +1150,17 @@ const Products = () => {
     'Home & Kitchen', 
     'Sports & Fitness', 
     'Books & Education', 
-    'Beauty & Personal Care', 
-    'Baby & Kids', 
-    'Pet Supplies', 
-    'Office & Stationery', 
-    'Travel & Luggage', 
-    'Garden & Outdoor'
+    'Beauty & Personal Care',
+    'Automotive',
+    'Toys & Games',
+    'Health & Wellness',
+    'Pet Supplies',
+    'Office & Stationery',
+    'Food & Groceries',
+    'Music & Instruments',
+    'Travel & Luggage',
+    'Garden & Outdoor',
+    'Baby & Kids'
   ];
 
   // Fetch wishlist and cart data

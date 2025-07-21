@@ -233,7 +233,7 @@ const Categories = () => {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Dashboard
+            <span className="btn-text">Back to Dashboard</span>
           </button>
           <div className="nav-logo">
             <h1>Explore Categories</h1>
