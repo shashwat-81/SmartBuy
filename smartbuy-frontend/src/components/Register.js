@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import axios from 'axios';
+import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -106,17 +107,17 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="register-container">
+      <div className="register-card">
+        <div className="register-header">
+          <h2>
             {step === 1 ? 'Create your account' : 'Verify your phone'}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p>
             {step === 1 ? (
               <>
                 Or{' '}
-                <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <Link to="/login">
                   sign in to your account
                 </Link>
               </>
@@ -126,157 +127,103 @@ const Register = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
+        {error && <div className="message error-message">{error}</div>}
+        {success && <div className="message success-message">{success}</div>}
+
+        {step === 1 ? (
+          <form onSubmit={handleRegister} className="register-form">
+            <div className="form-group">
+              <label className="form-label">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                className="form-input"
+                required
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+              />
             </div>
-          )}
 
-          {/* Success Message */}
-          {success && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {success}
+            <div className="form-group">
+              <label className="form-label">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                className="form-input"
+                required
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+              />
             </div>
-          )}
 
-          {step === 1 ? (
-            /* Registration Form */
-            <form onSubmit={handleRegister} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your full name"
-                />
-              </div>
+            <div className="form-group">
+              <label className="form-label">Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                className="form-input"
+                required
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Enter your phone number"
+              />
+            </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email Address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your email"
-                />
-              </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                className="form-input"
+                required
+                minLength="6"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+              />
+            </div>
 
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your phone number"
-                />
-              </div>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleOTPVerification} className="register-form">
+            <div className="form-group">
+              <label className="form-label">Enter OTP</label>
+              <input
+                type="text"
+                name="otp"
+                className="form-input otp-input"
+                required
+                maxLength="6"
+                value={otp}
+                onChange={(e) => {
+                  setOtp(e.target.value.replace(/\D/g, ''));
+                  setError('');
+                }}
+                placeholder="000000"
+              />
+            </div>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  minLength="6"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your password"
-                />
-              </div>
+            <button type="submit" className="submit-btn" disabled={loading || otp.length !== 6}>
+              {loading ? 'Verifying...' : 'Verify OTP'}
+            </button>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? 'Creating Account...' : 'Create Account'}
-                </button>
-              </div>
-            </form>
-          ) : (
-            /* OTP Verification Form */
-            <form onSubmit={handleOTPVerification} className="space-y-6">
-              <div>
-                <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                  Enter OTP
-                </label>
-                <input
-                  id="otp"
-                  name="otp"
-                  type="text"
-                  required
-                  maxLength="6"
-                  value={otp}
-                  onChange={(e) => {
-                    setOtp(e.target.value.replace(/\D/g, ''));
-                    setError('');
-                  }}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center text-2xl tracking-widest"
-                  placeholder="000000"
-                />
-              </div>
+            <div className="otp-actions">
+              <button type="button" onClick={() => setStep(1)} className="back-link">
+                ← Back to registration
+              </button>
+              <button type="button" onClick={resendOTP} disabled={loading} className="resend-link">
+                Resend OTP
+              </button>
+            </div>
+          </form>
+        )}
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading || otp.length !== 6}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? 'Verifying...' : 'Verify OTP'}
-                </button>
-              </div>
-
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={resendOTP}
-                  disabled={loading}
-                  className="text-sm text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
-                >
-                  Resend OTP
-                </button>
-              </div>
-
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="text-sm text-gray-600 hover:text-gray-500"
-                >
-                  ← Back to registration
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-
-        <div className="text-center text-sm text-gray-600">
+        <div className="register-footer">
           🔒 Your information is encrypted and secure
         </div>
       </div>

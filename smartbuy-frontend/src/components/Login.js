@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import axios from 'axios';
+import './Login.css';
 
 const Login = () => {
   const [phone, setPhone] = useState('');
@@ -95,9 +96,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {step === 1 ? 'Sign in to your account' : 'Enter OTP'}
           </h2>
@@ -115,134 +116,125 @@ const Login = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
+        {/* Messages */}
+        {error && <div className="message error-message">{error}</div>}
+        {success && <div className="message success-message">{success}</div>}
+
+        {/* Forms */}
+        {step === 1 ? (
+          /* Phone Input Form */
+          <form onSubmit={handleSendOTP} className="login-form">
+            <div className="form-group">
+              <label htmlFor="phone" className="form-label">
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  setError('');
+                }}
+                className="form-input"
+                placeholder="Enter your phone number"
+              />
             </div>
-          )}
 
-          {/* Success Message */}
-          {success && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {success}
+            <button
+              type="submit"
+              disabled={loading || !phone}
+              className="submit-btn"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending OTP...
+                </span>
+              ) : (
+                'Send OTP'
+              )}
+            </button>
+          </form>
+        ) : (
+          /* OTP Verification Form */
+          <form onSubmit={handleVerifyOTP} className="login-form">
+            <div className="form-group">
+              <label htmlFor="otp" className="form-label">
+                Enter OTP
+              </label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                required
+                maxLength="6"
+                value={otp}
+                onChange={(e) => {
+                  setOtp(e.target.value.replace(/\D/g, ''));
+                  setError('');
+                }}
+                className="form-input"
+                placeholder="000000"
+              />
             </div>
-          )}
 
-          {step === 1 ? (
-            /* Phone Input Form */
-            <form onSubmit={handleSendOTP} className="space-y-6">
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    setError('');
-                  }}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your phone number"
-                />
-              </div>
+            <button
+              type="submit"
+              disabled={loading || otp.length !== 6}
+              className="submit-btn"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Verifying...
+                </span>
+              ) : (
+                'Verify & Login'
+              )}
+            </button>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading || !phone}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending OTP...
-                    </span>
-                  ) : (
-                    'Send OTP'
-                  )}
-                </button>
-              </div>
-            </form>
-          ) : (
-            /* OTP Verification Form */
-            <form onSubmit={handleVerifyOTP} className="space-y-6">
-              <div>
-                <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                  Enter OTP
-                </label>
-                <input
-                  id="otp"
-                  name="otp"
-                  type="text"
-                  required
-                  maxLength="6"
-                  value={otp}
-                  onChange={(e) => {
-                    setOtp(e.target.value.replace(/\D/g, ''));
-                    setError('');
-                  }}
-                  className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center text-2xl tracking-widest"
-                  placeholder="000000"
-                />
-              </div>
+            <div className="otp-actions">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="back-link"
+              >
+                ← Change phone number
+              </button>
+              <button
+                type="button"
+                onClick={resendOTP}
+                disabled={loading}
+                className="resend-link"
+              >
+                Resend OTP
+              </button>
+            </div>
+          </form>
+        )}
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading || otp.length !== 6}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Verifying...
-                    </span>
-                  ) : (
-                    'Verify & Login'
-                  )}
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="text-sm text-gray-600 hover:text-gray-500"
-                >
-                  ← Change phone number
-                </button>
-                <button
-                  type="button"
-                  onClick={resendOTP}
-                  disabled={loading}
-                  className="text-sm text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
-                >
-                  Resend OTP
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-
-        <div className="text-center">
+        {/* Action Links */}
+        <div className="action-links">
           <div className="text-sm text-gray-600 mb-2">
             🔒 Secure OTP-based authentication
           </div>
-          <div className="text-xs text-gray-500">
+          {/* <div className="text-xs text-gray-500">
             For demo: Check the alert/console for OTP
-          </div>
+          </div> */}
+        </div>
+
+        {/* Footer */}
+        <div className="login-footer">
+          {/* ... existing footer content ... */}
         </div>
       </div>
     </div>
