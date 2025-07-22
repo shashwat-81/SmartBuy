@@ -1,7 +1,7 @@
 /* Categories Page Styles - Modern Redesign */
 .categories-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #464fb6 0%, #7c4eb0 50%, #b763a2 100%); /* Updated to match login page */
   overflow-x: hidden;
   animation: pageLoad 0.8s ease-out;
 }
