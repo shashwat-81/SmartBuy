@@ -5,39 +5,53 @@
   padding: 0;
 }
 
+/* Modern Navigation Bar */
 .products-nav {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  position: sticky;
+  top: 0;
   z-index: 100;
+  padding: 0;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .nav-content {
+  max-width: 1600px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  min-width: 0;
-  width: 100%;
-  padding: 0 32px;
-  min-height: 70px;
-  background: none;
+  justify-content: space-between;
+  padding: 16px 24px;
+  min-height: 64px;
 }
 
-.nav-left, .nav-right {
+.nav-left {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  min-width: 0;
+  gap: 20px;
+  min-width: max-content;
 }
 
 .nav-logo {
-  flex: 1 1 0%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-width: 0;
+  gap: 12px;
+}
+
+.nav-logo h1 {
+  color: white;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
 }
 
 .back-btn {
@@ -46,9 +60,9 @@
   gap: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -56,16 +70,17 @@
 }
 
 .back-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-.nav-logo h1 {
-  color: white;
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+.nav-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: max-content;
 }
 
 /* Enhanced Filters Section */
@@ -198,10 +213,11 @@
 
 /* Advanced Filters */
 .advanced-filters {
-  max-height: 0;
-  overflow: hidden;
+  max-height: 200px; /* Show by default on desktop */
+  overflow: visible;
   transition: max-height 0.3s ease;
   background: rgba(255, 255, 255, 0.03);
+  padding: 20px 0; /* Add padding by default */
 }
 
 .advanced-filters.show {
@@ -209,48 +225,89 @@
   padding: 20px 0;
 }
 
+/* Hide advanced filters on mobile by default */
+@media (max-width: 768px) {
+  .advanced-filters {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+  
+  .advanced-filters.show {
+    display: block;
+    max-height: 200px;
+    padding: 20px 0;
+  }
+  
+  .filter-toggle {
+    display: flex;
+  }
+}
+
+/* Desktop - always show filters */
+@media (min-width: 769px) {
+  .filter-toggle {
+    display: none !important; /* Hide filter toggle on desktop */
+  }
+  
+  .advanced-filters {
+    display: block !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 20px 0 !important;
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+/* Fix filter row layout */
 .filter-row {
   max-width: 100%;
   margin: 0 auto;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Align to bottom for better visual alignment */
   gap: 24px;
   padding: 0 32px;
   flex-wrap: wrap;
+  justify-content: flex-start; /* Distribute filters evenly */
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 150px;
+  min-width: 180px; /* Increase minimum width for better spacing */
+  flex: 0 0 auto; /* Prevent shrinking */
 }
 
-.filter-group label {
-  color: white;
-  font-weight: 500;
-  font-size: 14px;
+.filter-group.price-filter {
+  min-width: 240px; /* More space for price inputs */
 }
 
 .filter-select {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 12px;
+  padding: 12px 16px; /* Increase padding for better appearance */
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 160px; /* Ensure consistent width */
 }
 
-.filter-select:focus {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.filter-select option {
-  background: #2c3e50;
-  color: white;
+.clear-filters-btn {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  padding: 12px 20px; /* Adjust padding to match filter height */
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  align-self: flex-end; /* Align with other filter elements */
+  margin-top: 24px; /* Add top margin to align with selects */
 }
 
 /* Price Filter */
@@ -261,17 +318,18 @@
 .price-inputs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .price-input {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 12px;
+  padding: 12px 16px; /* Match other input padding */
   border-radius: 6px;
-  width: 80px;
-  font-size: 13px;
+  width: 100px; /* Increase width for better usability */
+  font-size: 14px;
+  text-align: center;
 }
 
 .price-input::placeholder {
@@ -282,16 +340,15 @@
   background: rgba(231, 76, 60, 0.2);
   color: #e74c3c;
   border: 1px solid rgba(231, 76, 60, 0.3);
-  padding: 10px 16px;
+  padding: 12px 20px; /* Adjust padding to match filter height */
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
   transition: all 0.3s ease;
-}
-
-.clear-filters-btn:hover {
-  background: rgba(231, 76, 60, 0.3);
+  white-space: nowrap;
+  align-self: flex-end; /* Align with other filter elements */
+  margin-top: 24px; /* Add top margin to align with selects */
 }
 
 /* Compare Bar */
@@ -965,11 +1022,15 @@
   }
 
   .advanced-filters {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
   }
 
   .advanced-filters.show {
     display: block;
+    max-height: 200px;
+    padding: 20px 0;
   }
 
   .filters-content {
@@ -1021,15 +1082,15 @@
   
   .nav-content {
     padding: 0 12px;
-    min-width: 0;
+    flex-wrap: nowrap; /* Prevent wrapping */
   }
   
   .nav-logo h1 {
-    font-size: 18px;
+    font-size: 16px; /* Reduce logo size on mobile */
   }
   
   .back-btn {
-    padding: 8px 10px;
+    padding: 8px 12px;
     font-size: 12px;
   }
   
@@ -1067,23 +1128,61 @@
   }
 }
 
-@media (max-width: 480px) {
-  .products-grid.grid-view {
-    grid-template-columns: 1fr;
+/* Mobile responsive fixes */
+@media (max-width: 768px) {
+  .nav-content {
+    padding: 0 12px;
+    flex-wrap: nowrap; /* Prevent wrapping */
+  }
+  
+  .nav-logo h1 {
+    font-size: 16px; /* Reduce logo size on mobile */
+  }
+  
+  .back-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .filter-row {
+    flex-direction: column;
     gap: 16px;
+    padding: 0 16px;
+    align-items: stretch;
   }
 
-  .product-card {
-    margin: 0 auto;
-    max-width: 350px;
+  .filter-group {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .clear-filters-btn {
+    margin-top: 0;
+    align-self: stretch;
   }
 
-  .modal-content {
-    padding: 16px;
+  .price-inputs {
+    justify-content: space-between;
   }
 
-  .quick-view-modal {
-    margin: 10px;
-    width: calc(100% - 20px);
+  .price-input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .filter-row {
+    gap: 16px;
+    padding: 0 24px;
+  }
+  
+  .filter-group {
+    min-width: 150px;
+  }
+  
+  .filter-group.price-filter {
+    min-width: 200px;
   }
 }
