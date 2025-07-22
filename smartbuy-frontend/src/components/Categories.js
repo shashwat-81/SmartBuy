@@ -13,7 +13,8 @@ const Categories = () => {
       title: "Summer Electronics Sale",
       subtitle: "Up to 70% OFF",
       description: "Latest smartphones, laptops & headphones at unbeatable prices!",
-      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop&crop=center",
+      // Updated image URL with fixed dimensions
+      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&w=1200&h=400&fit=crop&crop=edges&q=80",
       buttonText: "Shop Electronics",
       color: "#FF6B35"
     },
@@ -22,7 +23,7 @@ const Categories = () => {
       title: "Fashion Week Special",
       subtitle: "Buy 2 Get 1 FREE",
       description: "Trendy clothing, shoes & accessories from top brands",
-      image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=400&fit=crop&crop=center",
+      image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&w=1200&h=400&fit=crop&crop=edges&q=80",
       buttonText: "Shop Fashion",
       color: "#4ECDC4"
     },
@@ -31,7 +32,7 @@ const Categories = () => {
       title: "Home Makeover Sale",
       subtitle: "Flat 50% OFF",
       description: "Transform your space with furniture, decor & appliances",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=400&fit=crop&crop=center",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&w=1200&h=400&fit=crop&crop=edges&q=80",
       buttonText: "Shop Home",
       color: "#45B7D1"
     },
@@ -40,7 +41,7 @@ const Categories = () => {
       title: "Fitness Revolution",
       subtitle: "Starting at ₹499",
       description: "Premium gym equipment, sportswear & fitness accessories",
-      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=400&fit=crop&crop=center",
+      image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&w=1200&h=400&fit=crop&crop=edges&q=80",
       buttonText: "Get Fit Now",
       color: "#96CEB4"
     },
@@ -49,7 +50,7 @@ const Categories = () => {
       title: "Beauty & Wellness Fair",
       subtitle: "Up to 60% OFF",
       description: "Premium skincare, makeup & wellness products",
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=400&fit=crop&crop=center",
+      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&w=1200&h=400&fit=crop&crop=edges&q=80",
       buttonText: "Shop Beauty",
       color: "#FECA57"
     },
@@ -58,7 +59,7 @@ const Categories = () => {
       title: "Mega Book Sale",
       subtitle: "3 Books for ₹999",
       description: "Bestsellers, educational books & digital content",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=400&fit=crop&crop=center",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&w=1200&h=400&fit=crop&crop=edges&q=80",
       buttonText: "Read More",
       color: "#A8E6CF"
     }
