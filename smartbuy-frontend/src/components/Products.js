@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './ProductsNav.css';
 import './Products.css';
 
 const Products = () => {
@@ -1410,17 +1411,26 @@ const Products = () => {
       {/* Navigation Header */}
       <nav className="products-nav">
         <div className="nav-content">
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="back-btn"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
-          </button>
+          <div className="nav-left">
+            <button className="back-btn" onClick={() => navigate('/dashboard')}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="btn-text">Back to Dashboard</span>
+            </button>
+          </div>
           <div className="nav-logo">
             <h1>SmartBuy Products</h1>
+          </div>
+          <div className="nav-right">
+            <button className="back-btn" title="Go to Cart" onClick={() => navigate('/cart')}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+              </svg>
+              <span className="btn-text">Cart</span>
+            </button>
           </div>
         </div>
       </nav>
