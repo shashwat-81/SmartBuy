@@ -9,6 +9,8 @@ const OrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -81,6 +83,48 @@ const OrderDetails = () => {
     }
   };
 
+  const handleCancelOrder = async () => {
+    if (showConfirmation) {
+      try {
+        setIsCancelling(true);
+        const token = localStorage.getItem('token');
+        
+        // Call the cancel endpoint
+        const response = await axios.put(`/api/order/${orderId}/cancel`, {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.data.success) {
+          // Update the local order state to reflect cancellation
+          setOrder({
+            ...order,
+            status: 'cancelled'
+          });
+          
+          // Show success message
+          setError('');
+        } else {
+          throw new Error(response.data.message || 'Failed to cancel order');
+        }
+      } catch (err) {
+        console.error('Cancel order error:', err);
+        setError('Failed to cancel order. Please try again.');
+      } finally {
+        setIsCancelling(false);
+        setShowConfirmation(false);
+      }
+    } else {
+      // First click just shows confirmation
+      setShowConfirmation(true);
+    }
+  };
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false);
+  };
+
   if (loading) {
     return (
       <div className="order-details-container">
@@ -91,7 +135,7 @@ const OrderDetails = () => {
             </svg>
             Back to Orders
           </button>
-          <h1>Order Details</h1>
+          <h1 >Order Details</h1>
         </div>
         <div className="loading-spinner">
           <div className="spinner"></div>
@@ -223,16 +267,52 @@ const OrderDetails = () => {
                 </svg>
                 Track Order
               </button>
-              <button className="cancel-order-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Cancel Order
+              <button 
+                className={`cancel-order-btn ${isCancelling ? 'disabled' : ''}`}
+                onClick={handleCancelOrder}
+                disabled={isCancelling}
+              >
+                {showConfirmation ? (
+                  <>Confirm Cancellation</>
+                ) : (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    {isCancelling ? 'Cancelling...' : 'Cancel Order'}
+                  </>
+                )}
               </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="modal-overlay" onClick={closeConfirmation}>
+          <div className="confirmation-modal" onClick={e => e.stopPropagation()}>
+            <h3>Cancel Your Order?</h3>
+            <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+            
+            <div className="confirmation-actions">
+              <button 
+                className="confirm-cancel-btn"
+                onClick={handleCancelOrder}
+                disabled={isCancelling}
+              >
+                {isCancelling ? 'Processing...' : 'Yes, Cancel Order'}
+              </button>
+              <button 
+                className="keep-order-btn"
+                onClick={closeConfirmation}
+              >
+                No, Keep Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

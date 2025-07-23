@@ -117,29 +117,32 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
-// @route   PUT /api/orders/:id/cancel
-// @desc    Cancel an order
+// @route   PUT /api/order/:id/cancel
+// @desc    Cancel a user's order
 // @access  Private
 router.put('/:id/cancel', verifyToken, async (req, res) => {
   try {
-    const order = await Order.findOne({ _id: req.params.id, user: req.userId });
+    const order = await Order.findOne({ 
+      _id: req.params.id, 
+      user: req.userId 
+    });
     
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: 'Order not found'
+        message: 'Order not found or you are not authorized to cancel it'
       });
     }
     
-    // Check if order can be cancelled
+    // Check if order can be cancelled (not delivered or already cancelled)
     if (order.status === 'delivered' || order.status === 'cancelled') {
       return res.status(400).json({
         success: false,
-        message: `Order cannot be cancelled because it's already ${order.status}`
+        message: `This order cannot be cancelled because it's already ${order.status}`
       });
     }
     
-    // Update order status
+    // Update order status to cancelled
     order.status = 'cancelled';
     await order.save();
     
@@ -150,7 +153,10 @@ router.put('/:id/cancel', verifyToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Cancel order error:', error);
-    res.status(500).json({ success: false, message: 'Server error while cancelling order' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error while cancelling order'
+    });
   }
 });
 
