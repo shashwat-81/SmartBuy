@@ -65,27 +65,28 @@
 }
 
 /* Loading State */
-
-
-.loading-indicator {
-  width: 60px;
-  height: 6px;
-  background: linear-gradient(90deg, #8bb4fe, #6366f1);
-  border-radius: 3px;
-  margin-bottom: 24px;
-  animation: pulse 1.5s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: white;
 }
 
-@keyframes pulse {
-  0%, 100% { 
-    transform: scaleX(0.6);
-    opacity: 0.6;
-  }
-  50% { 
-    transform: scaleX(1);
-    opacity: 1;
-  }
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Error Message */
