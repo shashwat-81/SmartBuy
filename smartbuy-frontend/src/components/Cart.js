@@ -174,10 +174,7 @@ const Cart = () => {
           </button>
           <h1>Shopping Cart</h1>
         </div>
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Loading your cart...</p>
-        </div>
+        
       </div>
     );
   }

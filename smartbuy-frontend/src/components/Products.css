@@ -38,33 +38,6 @@
   text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Form Input Styles */
-.form-input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 16px;
-  color: black;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-  caret-color: #ffffff;
-}
-
-.form-input:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
-}
-
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 400;
-}
-
 /* Button Styles */
 .submit-btn {
   width: 100%;
@@ -88,30 +61,6 @@
 .submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-/* Message Styles */
-.message {
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.error-message {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
-}
-
-.success-message {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  color: #86efac;
 }
 
 /* Animations */
@@ -367,8 +316,9 @@
 
 /* Advanced Filters */
 .advanced-filters {
-  max-height: 200px; /* Show by default on desktop */
-  overflow: visible;
+  max-height: none !important; /* Override any max-height limitations */
+  overflow: visible !important; /* Ensure content is visible */
+  display: block !important; /* Force display */
   transition: max-height 0.3s ease;
   background: rgba(255, 255, 255, 0.03);
   padding: 20px 0; /* Add padding by default */
@@ -417,20 +367,22 @@
 .filter-row {
   max-width: 100%;
   margin: 0 auto;
-  display: flex;
-  align-items: flex-end; /* Align to bottom for better visual alignment */
+  display: flex !important; /* Force display flex */
+  align-items: flex-end;
   gap: 24px;
   padding: 0 32px;
   flex-wrap: wrap;
-  justify-content: flex-start; /* Distribute filters evenly */
+  justify-content: flex-start;
+  z-index: 20; /* Ensure filters appear above other content */
 }
 
 .filter-group {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   gap: 8px;
-  min-width: 180px; /* Increase minimum width for better spacing */
-  flex: 0 0 auto; /* Prevent shrinking */
+  min-width: 180px;
+  flex: 0 0 auto;
+  opacity: 1 !important;
 }
 
 .filter-group.price-filter {
@@ -439,17 +391,23 @@
 
 .filter-select {
   background: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: white !important; /* Force text color */
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 12px 16px; /* Increase padding for better appearance */
+  padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 160px; /* Ensure consistent width */
+  min-width: 160px;
+  opacity: 1 !important;
+  display: block !important;
+  z-index: 5;
 }
 
 .clear-filters-btn {
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 5;
   background: rgba(231, 76, 60, 0.2);
   color: #e74c3c;
   border: 1px solid rgba(231, 76, 60, 0.3);
