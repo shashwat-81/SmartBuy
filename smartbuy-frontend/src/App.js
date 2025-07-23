@@ -11,6 +11,7 @@ import Wishlist from './components/Wishlist';
 import Cart from './components/Cart';
 import Checkout from './components/Checkout';
 import OrderSuccess from './components/OrderSuccess';
+import OrderDetails from './components/OrderDetails';
 import './App.css';
 
 // Simple authentication context
@@ -177,6 +178,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <OrderSuccess />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/order/:orderId" 
+              element={
+                <ProtectedRoute>
+                  <OrderDetails />
                 </ProtectedRoute>
               } 
             />

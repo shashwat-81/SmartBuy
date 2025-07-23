@@ -3,10 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Orders.css';
 
+// Add this line to set the default base URL for all axios requests
+axios.defaults.baseURL = 'http://localhost:5000';
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [trackingModalOpen, setTrackingModalOpen] = useState(false);
+  const [currentTracking, setCurrentTracking] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,7 +23,8 @@ const Orders = () => {
       }
 
       try {
-        const response = await axios.get('/api/orders', {
+        // Use the correct endpoint that matches your server.js configuration
+        const response = await axios.get('/api/order', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -63,6 +69,61 @@ const Orders = () => {
       case 'cancelled': return '#EF4444';
       default: return '#6B7280';
     }
+  };
+
+  const handleTrackOrder = (order) => {
+    // Get tracking information (in a real app, you might fetch this from backend)
+    const trackingInfo = {
+      orderId: order._id,
+      status: order.status,
+      estimatedDelivery: new Date(Date.now() + 3*24*60*60*1000).toLocaleDateString(),
+      trackingId: order.trackingInfo || `TRK${order._id.substring(0, 6)}`,
+      steps: [
+        {
+          title: 'Order Placed',
+          description: `Your order was placed on ${formatDate(order.orderDate || order.createdAt)}`,
+          completed: true,
+          date: order.orderDate || order.createdAt
+        },
+        {
+          title: 'Processing',
+          description: 'Your order is being processed',
+          completed: ['processing', 'shipped', 'delivered'].includes(order.status.toLowerCase()),
+          date: new Date(new Date(order.orderDate || order.createdAt).getTime() + 24*60*60*1000)
+        },
+        {
+          title: 'Shipped',
+          description: 'Your order has been shipped',
+          completed: ['shipped', 'delivered'].includes(order.status.toLowerCase()),
+          date: new Date(new Date(order.orderDate || order.createdAt).getTime() + 2*24*60*60*1000)
+        },
+        {
+          title: 'Out for Delivery',
+          description: 'Your order is out for delivery',
+          completed: ['delivered'].includes(order.status.toLowerCase()),
+          date: new Date(new Date(order.orderDate || order.createdAt).getTime() + 4*24*60*60*1000)
+        },
+        {
+          title: 'Delivered',
+          description: 'Your order has been delivered',
+          completed: ['delivered'].includes(order.status.toLowerCase()),
+          date: new Date(new Date(order.orderDate || order.createdAt).getTime() + 5*24*60*60*1000)
+        }
+      ]
+    };
+    
+    setCurrentTracking(trackingInfo);
+    setTrackingModalOpen(true);
+  };
+
+  const closeTrackingModal = () => {
+    setTrackingModalOpen(false);
+    setTimeout(() => setCurrentTracking(null), 300);
+  };
+
+  // Add this function to handle viewing details
+  const handleViewDetails = (orderId) => {
+    navigate(`/order/${orderId}`);
   };
 
   if (loading) {
@@ -130,8 +191,16 @@ const Orders = () => {
             <div key={order.id} className="order-card">
               <div className="order-header">
                 <div className="order-info">
-                  <h3>Order #{order.id}</h3>
-                  <p className="order-date">Placed on {formatDate(order.date)}</p>
+                  <h3>Order #{order._id}</h3>
+                  <p className="order-date">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Placed on {formatDate(order.orderDate || order.createdAt)}
+                  </p>
                 </div>
                 <div className="order-status">
                   <span 
@@ -158,15 +227,82 @@ const Orders = () => {
 
               <div className="order-footer">
                 <div className="order-total">
-                  <strong>Total: {formatPrice(order.total)}</strong>
+                  <strong>Total: {formatPrice(order.totalAmount)}</strong>
                 </div>
                 <div className="order-actions">
-                  <button className="track-btn">Track Order</button>
-                  <button className="details-btn">View Details</button>
+                  {order.status !== 'cancelled' && order.status !== 'delivered' && (
+                    <button 
+                      className="track-btn"
+                      onClick={() => handleTrackOrder(order)}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 17l6-6-6-6"></path>
+                      </svg>
+                      Track Order
+                    </button>
+                  )}
+                  <button 
+                    className="details-btn"
+                    onClick={() => handleViewDetails(order._id)}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    View Details
+                  </button>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Tracking Modal */}
+      {trackingModalOpen && currentTracking && (
+        <div className="modal-overlay" onClick={closeTrackingModal}>
+          <div className="tracking-modal" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeTrackingModal}>
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <h2>Order Tracking</h2>
+            <div className="tracking-header">
+              <div className="tracking-info">
+                <p><strong>Order ID:</strong> {currentTracking.orderId}</p>
+                <p><strong>Tracking Number:</strong> {currentTracking.trackingId}</p>
+              </div>
+              <div className="delivery-info">
+                <p><strong>Status:</strong> <span className="status">{currentTracking.status}</span></p>
+                <p><strong>Estimated Delivery:</strong> {currentTracking.estimatedDelivery}</p>
+              </div>
+            </div>
+            
+            <div className="tracking-timeline">
+              {currentTracking.steps.map((step, index) => (
+                <div key={index} className={`timeline-step ${step.completed ? 'completed' : ''}`}>
+                  <div className="timeline-indicator">
+                    {step.completed ? (
+                      <svg width="24" height="24" fill="none" stroke="#10B981" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <span className="indicator-dot"></span>
+                    )}
+                    {index < currentTracking.steps.length - 1 && <span className="timeline-line"></span>}
+                  </div>
+                  <div className="timeline-content">
+                    <h4>{step.title}</h4>
+                    <p>{step.description}</p>
+                    {step.date && step.completed && (
+                      <p className="step-date">{formatDate(step.date)}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
