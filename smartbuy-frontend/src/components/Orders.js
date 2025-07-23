@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Orders.css';
 
 const Orders = () => {
@@ -17,42 +18,15 @@ const Orders = () => {
       }
 
       try {
-        // For now, we'll create mock orders since we don't have an orders backend yet
-        // In a real application, you would fetch from your orders API
-        const mockOrders = [
-          {
-            id: 'ORD001',
-            date: '2024-01-15',
-            status: 'Delivered',
-            total: 2999,
-            items: [
-              {
-                id: 1,
-                name: 'iPhone 15 Pro',
-                price: 2999,
-                quantity: 1,
-                image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80'
-              }
-            ]
-          },
-          {
-            id: 'ORD002',
-            date: '2024-01-10',
-            status: 'In Transit',
-            total: 1599,
-            items: [
-              {
-                id: 2,
-                name: 'MacBook Air M2',
-                price: 1599,
-                quantity: 1,
-                image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80'
-              }
-            ]
+        const response = await axios.get('/api/orders', {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
-        ];
-
-        setOrders(mockOrders);
+        });
+        
+        if (response.data.success) {
+          setOrders(response.data.data.orders);
+        }
       } catch (error) {
         console.error('Error fetching orders:', error);
         setError('Failed to load orders');

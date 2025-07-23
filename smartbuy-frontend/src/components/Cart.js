@@ -158,8 +158,22 @@ const Cart = () => {
   };
 
   const handleProceedToCheckout = () => {
-    // In a real app, you would navigate to checkout page
-    alert('Checkout functionality would be implemented here!');
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login', { state: { from: '/cart' } });
+      return;
+    }
+    
+    // Navigate to checkout with cart data
+    navigate('/checkout', { 
+      state: { 
+        cartItems,
+        subtotal: calculateSubtotal(),
+        shipping: calculateSubtotal() > 500 ? 0 : 50,
+        total: calculateTotal()
+      } 
+    });
   };
 
   if (loading) {

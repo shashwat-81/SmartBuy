@@ -9,6 +9,8 @@ import Categories from './components/Categories';
 import Orders from './components/Orders';
 import Wishlist from './components/Wishlist';
 import Cart from './components/Cart';
+import Checkout from './components/Checkout';
+import OrderSuccess from './components/OrderSuccess';
 import './App.css';
 
 // Simple authentication context
@@ -159,6 +161,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Cart />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/checkout" 
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/order-success" 
+              element={
+                <ProtectedRoute>
+                  <OrderSuccess />
                 </ProtectedRoute>
               } 
             />
