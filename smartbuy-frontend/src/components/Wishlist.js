@@ -133,19 +133,29 @@ const Wishlist = () => {
 
   return (
     <div className="wishlist-container">
-      {/* Header */}
-      <div className="wishlist-header">
-        <button onClick={() => navigate('/dashboard')} className="back-btn">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Dashboard
-        </button>
-        <h1>My Wishlist</h1>
-        {wishlistItems.length > 0 && (
-          <span className="item-count">{wishlistItems.length} item{wishlistItems.length !== 1 ? 's' : ''}</span>
-        )}
-      </div>
+      {/* Navigation */}
+      <nav className="wishlist-nav">
+        <div className="nav-container">
+          <div className="nav-left">
+            <button onClick={() => navigate('/dashboard')} className="back-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Dashboard
+            </button>
+          </div>
+          
+          <div className="nav-center">
+            <h1>My Wishlist</h1>
+          </div>
+          
+          <div className="nav-right">
+            {wishlistItems.length > 0 && (
+              <span className="item-count">{wishlistItems.length} item{wishlistItems.length !== 1 ? 's' : ''}</span>
+            )}
+          </div>
+        </div>
+      </nav>
 
       {/* Error Message */}
       {error && (

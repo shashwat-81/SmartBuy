@@ -1,8 +1,9 @@
 /* Products Container */
 .products-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #464fb6 0%, #7c4eb0 50%, #b763a2 100%);
+  background: linear-gradient(135deg, #464fb6 0%, #7c4eb0 50%, #b763a2 100%); /* Updated gradient */
   padding: 24px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Products Card Container */
@@ -105,7 +106,7 @@
 .products-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 0;
+  padding: 5px;
 }
 
 /* Modern Navigation Bar */
