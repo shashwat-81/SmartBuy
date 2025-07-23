@@ -79,7 +79,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 16px;
-  color: rgb(39, 39, 216);
+  color: black;
   font-size: 16px;
   transition: all 0.3s ease;
 }
@@ -91,9 +91,9 @@
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
 }
 
-.form-input::placeholder {
+/* .form-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
-}
+} */
 
 /* OTP Input Styling */
 .otp-input {
