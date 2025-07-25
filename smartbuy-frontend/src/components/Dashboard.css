@@ -106,7 +106,7 @@ html::-webkit-scrollbar {
 .quick-actions-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
-  background: rgba(255, 255, 255, 0.15);
+  background: #4f855c26;
 }
 
 /* Update Quick Actions Grid for vertical layout in sidebar */
@@ -214,9 +214,9 @@ html::-webkit-scrollbar {
 
 /* --- Redesigned Navigation Bar --- */
 .dashboard-nav {
-  background: rgba(255,255,255,0.08);
+  background: rgba(163, 92, 161, 0.427);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.10);
+  border-bottom: 1px solid rgba(229, 239, 250, 0);
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
@@ -297,9 +297,9 @@ html::-webkit-scrollbar {
 }
 
 .brand-text {
-  font-size: 15px;
+  font-size: 30px;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, white 0%, #ced2e2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -350,7 +350,7 @@ html::-webkit-scrollbar {
   position: absolute;
   top: 0;
   right: 0;
-  background: #ff4444;
+  background: #dd9292;
   color: #fff;
   border-radius: 50%;
   width: 14px;
@@ -646,11 +646,10 @@ html::-webkit-scrollbar {
 }
 
 .hero-title {
-  font-size: 32px;
-  font-weight: 600;
-  color: #ffffff;
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
   margin-bottom: 16px;
-  line-height: 1.2;
 }
 
 @media (min-width: 768px) {
@@ -666,8 +665,8 @@ html::-webkit-scrollbar {
 }
 
 .brand-text {
-  color: #ffd700;
-  font-weight: 700;
+  color: #e4afc1; /* Replace with your brand color */
+  font-weight: 800;
 }
 
 .hero-description {
@@ -920,7 +919,7 @@ html::-webkit-scrollbar {
 
 /* Stat Cards */
 .stat-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(184, 165, 165, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
