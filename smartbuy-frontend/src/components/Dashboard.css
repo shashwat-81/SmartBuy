@@ -1000,24 +1000,21 @@ html::-webkit-scrollbar {
 }
 
 .btn-secondary {
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 500;
-  font-size: 14px;
+  color: white !important;        /* White text */
+  border: 2px solid white;        /* Optional: white border */
+  background-color: transparent;  /* Optional: make it blend in */
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-transform: uppercase;
-  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
+  background-color: white;
+  color: #7e7878; /* Or any brand accent */
 }
+
 
 .btn-logout, .modern-logout-btn {
   background: rgba(255, 255, 255, 0.1);
