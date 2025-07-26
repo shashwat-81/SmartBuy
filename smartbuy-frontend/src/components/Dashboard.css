@@ -1000,9 +1000,9 @@ html::-webkit-scrollbar {
 }
 
 .btn-secondary {
-  background: transparent;
+  background: rgba(40, 116, 240, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  color: #2874f0;
   padding: 12px 24px;
   border-radius: 12px;
   font-weight: 500;
