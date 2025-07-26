@@ -999,15 +999,17 @@ html::-webkit-scrollbar {
 }
 
 .btn-secondary {
-  color: #2874f0 !important;        /* White text */
-  border: 2px solid white;        /* Optional: white border */
-  background-color: transparent;  /* Optional: make it blend in */
-  padding: 10px 20px;
-  font-weight: 600;
-  border-radius: 8px;
+  background: rgba(40, 116, 240, 0.1);         /* From new-feature */
+  border: 2px solid rgba(255, 255, 255, 0.3);  /* From new-feature */
+  color: #2874f0 !important;                  /* From main, added !important */
+  padding: 12px 24px;                         /* From new-feature (larger padding) */
+  border-radius: 12px;                        /* From new-feature (more rounded) */
+  font-weight: 600;                           /* From main (bolder) */
+  font-size: 14px;                            /* From new-feature */
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 
 .btn-secondary:hover {
   background-color: white;

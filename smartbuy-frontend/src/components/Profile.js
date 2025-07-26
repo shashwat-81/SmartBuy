@@ -22,6 +22,9 @@ const Profile = () => {
     confirmPassword: ''
   });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [addresses, setAddresses] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [activeTab, setActiveTab] = useState('profile');
   const navigate = useNavigate();
 
   // 1. Define the function
@@ -189,137 +192,180 @@ const Profile = () => {
   }
 
   return (
-    <div className="dashboard-bg" style={{minHeight: '100vh'}}>
-      {/* Top Bar */}
-      <div className="dashboard-nav" style={{marginBottom: 32}}>
-        <div className="nav-content" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <button
-            onClick={() => navigate('/dashboard')}
-            style={{
-              background: 'none',
-              border: 'none',
-              outline: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              padding: 0,
-              height: 32
-            }}
-            aria-label="Back to Dashboard"
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <div className="nav-logo" style={{gap: 10, display: 'flex', alignItems: 'center'}}>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={28} height={28}>
-              <circle cx="12" cy="12" r="14" stroke="#fff" strokeWidth="2" fill="#2874f0" />
-              <path stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            My Profile
-          </div>
-        </div>
-      </div>
-      {/* Profile Card */}
-      <div style={{maxWidth: 400, margin: '0 auto', position: 'relative', zIndex: 1}}>
-        {/* Floating Avatar */}
-        <div style={{
-          position: 'absolute',
-          left: '50%',
-          top: -48,
-          transform: 'translateX(-50%)',
-          zIndex: 2,
-        }}>
-          <div style={{
-            width: 96,
-            height: 96,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #2874f0 0%, #1e5bb8 100%)',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 40,
-            fontWeight: 700,
-            border: '5px solid #fff',
-            boxShadow: '0 4px 16px 0 rgba(40,116,240,0.15)'
-          }}>
-            {profile?.name ? profile.name.charAt(0).toUpperCase() : 'U'}
-          </div>
-        </div>
-        <div className="card" style={{
-          padding: '72px 32px 32px 32px',
-          overflow: 'hidden',
-          border: '1px solid #e0e0e0',
-          borderRadius: 18,
-          boxShadow: '0 8px 32px 0 rgba(40,116,240,0.10)',
-          marginTop: 48,
-          background: '#fff',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          <h2 style={{margin: '0 0 4px 0', color: '#212121', fontWeight: 600, fontSize: 24, textAlign: 'center'}}>{profile?.name || user?.name || 'User'}</h2>
-          <div style={{color: '#878787', fontSize: 15, marginBottom: 18, textAlign: 'center'}}>Manage your account information</div>
-          {error && (
-            <div className="error-message" style={{background: '#fed7d7', color: '#c53030', padding: 16, borderRadius: 8, margin: 16, textAlign: 'center'}}>
-              <svg fill="currentColor" viewBox="0 0 20 20" width={20} height={20} style={{marginRight: 8, verticalAlign: 'middle'}}>
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+    <div className="profile-container">
+      {/* Single Navigation Bar */}
+      <nav className="profile-nav">
+        <div className="nav-wrapper">
+          <div className="nav-left">
+            <button onClick={() => navigate('/dashboard')} className="back-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 19l-7-7 7-7" />
               </svg>
-              {error}
-            </div>
-          )}
-          {/* Info Section */}
-          <div className="info-grid" style={{padding: 0, display: 'grid', gridTemplateColumns: '1fr', gap: 20, marginBottom: 28}}>
-            <div className="info-item" style={{display: 'flex', alignItems: 'center', gap: 12}}>
-              <span style={{color: '#2874f0', display: 'flex', alignItems: 'center'}}>
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-              </span>
-              <div>
-                <div className="info-label">Full Name</div>
-                <div className="info-value">{profile?.name || user?.name || 'Not provided'}</div>
-              </div>
-            </div>
-            <div className="info-item" style={{display: 'flex', alignItems: 'center', gap: 12}}>
-              <span style={{color: '#2874f0', display: 'flex', alignItems: 'center'}}>
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              </span>
-              <div>
-                <div className="info-label">Email</div>
-                <div className="info-value">{profile?.email || user?.email || 'Not provided'}</div>
-              </div>
-            </div>
-            <div className="info-item" style={{display: 'flex', alignItems: 'center', gap: 12}}>
-              <span style={{color: '#2874f0', display: 'flex', alignItems: 'center'}}>
-                <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 5h2M7 5h2M11 5h2M15 5h2M19 5h2M3 10h2m4 0h2m4 0h2m4 0h2M3 15h2m4 0h2m4 0h2m4 0h2" /></svg>
-              </span>
-              <div>
-                <div className="info-label">Phone</div>
-                <div className="info-value">{profile?.phone || user?.phone || 'Not provided'}</div>
-              </div>
-            </div>
-          </div>
-          {/* Actions */}
-          <div style={{display: 'flex', gap: 12, marginBottom: 12}}>
-            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}} onClick={handleEditProfile}>
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              Edit Profile
-            </button>
-            <button className="btn-primary" style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2874f0', borderRadius: 8, height: 44, fontSize: 16}} onClick={handleChangePassword}>
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              Change Password
+              <span>Back</span>
             </button>
           </div>
-          <button className="btn-primary" style={{width: '100%', background: '#e53e3e', color: '#fff', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 8, height: 44, fontSize: 16}} onClick={handleLogout}>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={20} height={20}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Logout
-          </button>
+          
+          <div className="nav-center">
+            <button 
+              className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`}
+              onClick={() => setActiveTab('profile')}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+              </svg>
+              Profile
+            </button>
+            
+            <button 
+              className={`nav-link ${activeTab === 'orders' ? 'active' : ''}`}
+              onClick={() => setActiveTab('orders')}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              Orders
+            </button>
+            
+            <button 
+              className={`nav-link ${activeTab === 'addresses' ? 'active' : ''}`}
+              onClick={() => setActiveTab('addresses')}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM12 11.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
+              </svg>
+              Addresses
+            </button>
+          </div>
+          
+          <div className="nav-right">
+            <button className="logout-btn" onClick={handleLogout}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+              </svg>
+              Logout
+            </button>
+          </div>
         </div>
+      </nav>
+
+      <div className="profile-content">
+        {activeTab === 'profile' && (
+          <div className="profile-section">
+            <div className="profile-header">
+              <div className="profile-avatar">
+                {profile?.name?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <h2>{profile?.name || 'User'}</h2>
+              <p>{profile?.email}</p>
+            </div>
+            
+            <div className="profile-details">
+              <div className="info-card">
+                <div className="info-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                  </svg>
+                </div>
+                <div className="info-content">
+                  <span className="info-label">Phone</span>
+                  <span className="info-value">{profile?.phone || 'Add Phone'}</span>
+                </div>
+              </div>
+
+              <div className="action-buttons">
+                <button onClick={handleEditProfile} className="btn-action">
+                  <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  Edit Profile
+                </button>
+                <button onClick={handleChangePassword} className="btn-action">
+                  <svg viewBox="0 0 24 24" width="20" height="20">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0110 0v4" />
+                  </svg>
+                  Change Password
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'orders' && (
+          <div className="profile-section">
+            <div className="section-header">
+              <h3>Recent Orders</h3>
+              <button className="btn-view-all" onClick={() => navigate('/orders')}>View All</button>
+            </div>
+            <div className="orders-grid">
+              {orders?.length > 0 ? (
+                orders.map((order) => (
+                  <div key={order._id} className="order-card">
+                    <div className="order-header">
+                      <span className="order-date">
+                        {new Date(order.createdAt).toLocaleDateString()}
+                      </span>
+                      <span className={`order-status ${order.status.toLowerCase()}`}>
+                        {order.status}
+                      </span>
+                    </div>
+                    <div className="order-items">
+                      {order.items.slice(0, 2).map((item) => (
+                        <div key={item._id} className="order-item">
+                          <img src={item.image} alt={item.name} />
+                          <div className="item-details">
+                            <h4>{item.name}</h4>
+                            <p>₹{item.price}</p>
+                            <span>Qty: {item.quantity}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="order-footer">
+                      <span className="order-total">Total: ₹{order.totalAmount}</span>
+                      <button className="btn-track">Track Order</button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <p>No orders placed yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'addresses' && (
+          <div className="profile-section">
+            <div className="section-header">
+              <h3>Saved Addresses</h3>
+              <button className="btn-add">Add New Address</button>
+            </div>
+            <div className="addresses-grid">
+              {addresses?.length > 0 ? (
+                addresses.map((address) => (
+                  <div key={address._id} className="address-card">
+                    <div className="address-type">{address.type}</div>
+                    <h4>{address.name}</h4>
+                    <p>{address.street}</p>
+                    <p>{address.city}, {address.state} {address.pincode}</p>
+                    <p>Phone: {address.phone}</p>
+                    <div className="card-actions">
+                      <button className="btn-edit">Edit</button>
+                      <button className="btn-delete">Delete</button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <p>No addresses saved yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Edit Profile Modal */}
