@@ -1,148 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../App';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const [profile, setProfile] = useState(null);
+  const { logout } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [stats, setStats] = useState({
-    orders: 0,
-    totalSpent: 0,
-    wishlistItems: 0,
-    cartItems: 0
-  });
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/auth/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+    // Simulate loading for better UX
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
 
-        if (response.data.success) {
-          setProfile(response.data.data);
-        }
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-        setError('Failed to load profile information');
-        // If token is invalid, redirect to login
-        if (err.response?.status === 401) {
-          logout();
-          navigate('/login');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchUserStats = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const headers = { Authorization: `Bearer ${token}` };
-        
-        // Initialize stats object
-        const newStats = {
-          orders: 0,
-          totalSpent: 0,
-          wishlistItems: 0,
-          cartItems: 0
-        };
-
-        // Fetch all data concurrently with better error handling
-        const promises = [
-          // Fetch wishlist data
-          axios.get('http://localhost:5000/api/shop/wishlist', { headers })
-            .then(response => {
-              console.log('Wishlist response:', response.data);
-              newStats.wishlistItems = response.data?.data?.length || response.data?.items?.length || 0;
-            })
-            .catch(err => {
-              console.log('Wishlist fetch error (using default):', err.response?.status || err.message);
-              newStats.wishlistItems = 0;
-            }),
-          
-          // Fetch cart data
-          axios.get('http://localhost:5000/api/shop/cart', { headers })
-            .then(response => {
-              console.log('Cart response:', response.data);
-              newStats.cartItems = response.data?.data?.length || response.data?.items?.length || 0;
-            })
-            .catch(err => {
-              console.log('Cart fetch error (using default):', err.response?.status || err.message);
-              newStats.cartItems = 0;
-            }),
-          
-          // Fetch orders data
-          axios.get('http://localhost:5000/api/shop/orders', { headers })
-            .then(response => {
-              console.log('Orders response:', response.data);
-              const orders = response.data?.data || response.data?.orders || [];
-              newStats.orders = orders.length || 0;
-              newStats.totalSpent = orders.reduce((total, order) => total + (order.totalAmount || order.total || 0), 0);
-            })
-            .catch(err => {
-              console.log('Orders fetch error (using default):', err.response?.status || err.message);
-              newStats.orders = 0;
-              newStats.totalSpent = 0;
-            })
-        ];
-
-        // Wait for all requests to complete
-        await Promise.all(promises);
-        
-        console.log('Final stats:', newStats);
-        setStats(newStats);
-
-      } catch (err) {
-        console.error('Error in fetchUserStats:', err);
-        // Keep default values on error
-        setStats({
-          orders: 0,
-          totalSpent: 0,
-          wishlistItems: 0,
-          cartItems: 0
-        });
-      }
-    };
-
-    fetchProfile();
-    fetchUserStats();
-  }, [logout, navigate]);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const handleProfileClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Profile button clicked!', e);
-    console.log('Navigate function:', navigate);
-    try {
-      navigate('/profile');
-    } catch (error) {
-      console.error('Navigation error:', error);
-    }
+  const handleProfileClick = () => {
+    navigate('/profile');
   };
 
-  // Navigation handlers for each action
   const handleNavigation = (path) => {
-    try {
-      navigate(path);
-    } catch (error) {
-      console.error(`Navigation to ${path} failed:`, error);
-      // Fallback navigation
-      window.location.href = path;
-    }
+    navigate(path);
   };
 
   if (loading) {
@@ -161,7 +47,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-bg dashboard-container">
-      {/* Modern Navigation Header */}
+      {/* Navigation Header */}
       <nav className="dashboard-nav">
         <div className="nav-content">
           <div className="nav-left">
@@ -188,7 +74,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Modern Quick Actions */}
+          {/* Quick Actions */}
           <div className="nav-quick-actions">
             <button 
               onClick={() => handleNavigation('/products')} 
@@ -232,13 +118,11 @@ const Dashboard = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
               </svg>
               <span>Cart</span>
-              {stats.cartItems > 0 && <span className="cart-badge">{stats.cartItems}</span>}
             </button>
           </div>
           
           <div className="nav-actions">
             <button 
-              type="button"
               onClick={handleProfileClick}
               className="profile-btn"
               title="My Profile"
@@ -275,113 +159,31 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Hero + Stats Side-by-Side */}
-          <div className="dashboard-hero-stats-grid">
-            {/* Welcome Hero Section */}
-            <div className="hero-section">
-              <div className="hero-content">
-                <div className="hero-text">
-                  <div className="icon-container">
-                    <svg className="hero-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                  </div>
-                  <h1 className="hero-title">
-                    Welcome to <span className="brand-text">SmartBuy</span>
-                  </h1>
-                  <p className="hero-description">
-                    Your one-stop destination for all your shopping needs. Discover amazing products, great deals, and enjoy a seamless shopping experience.
-                  </p>
-                  <div className="hero-buttons">
-                    <button className="btn-primary" onClick={() => handleNavigation('/products')}>Start Shopping</button>
-                    <button className="btn-secondary" onClick={() => handleNavigation('/categories')}>Explore Categories</button>
-                  </div>
+          {/* Hero Section */}
+          <div className="hero-section">
+            <div className="hero-content">
+              <div className="hero-text">
+                <div className="icon-container">
+                  <svg className="hero-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
                 </div>
-                <div className="hero-visual">
-                  <div className="visual-container">
-                    <svg className="visual-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                    </svg>
-                  </div>
+                <h1 className="hero-title">
+                  Welcome to <span className="brand-text">SmartBuy</span>
+                </h1>
+                <p className="hero-description">
+                  Your one-stop destination for all your shopping needs. Discover amazing products, great deals, and enjoy a seamless shopping experience.
+                </p>
+                <div className="hero-buttons">
+                  <button className="btn-primary" onClick={() => handleNavigation('/products')}>Start Shopping</button>
+                  <button className="btn-secondary" onClick={() => handleNavigation('/categories')}>Explore Categories</button>
                 </div>
               </div>
-            </div>
-            {/* Stats Section (now on right of hero) */}
-            <div className="cards-grid stats-grid stats-side">
-              <div className="stat-card" onClick={() => handleNavigation('/orders')} style={{cursor: 'pointer'}} title="View your orders">
-                <div className="stat-content">
-                  <div className="stat-info">
-                    <div className="stat-label">Total Orders</div>
-                    <div className="stat-value">{stats.orders}</div>
-                    <div className="stat-description">
-                      {stats.orders === 0 ? 
-                        "🛒 Ready to place your first order? Start shopping!" : 
-                        `You've successfully completed ${stats.orders} order${stats.orders !== 1 ? 's' : ''}!`
-                      }
-                    </div>
-                  </div>
-                  <div className="stat-icon orders">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="stat-card" onClick={() => handleNavigation('/orders')} style={{cursor: 'pointer'}} title="View spending summary">
-                <div className="stat-content">
-                  <div className="stat-info">
-                    <div className="stat-label">Total Spent</div>
-                    <div className="stat-value">₹{stats.totalSpent.toLocaleString('en-IN')}</div>
-                    <div className="stat-description">
-                      {stats.totalSpent === 0 ? 
-                        "💰 Start your shopping journey and discover amazing deals!" : 
-                        `You've invested ₹${stats.totalSpent.toLocaleString('en-IN')} in quality products!`
-                      }
-                    </div>
-                  </div>
-                  <div className="stat-icon spending">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="stat-card" onClick={() => handleNavigation('/wishlist')} style={{cursor: 'pointer'}} title="View your wishlist">
-                <div className="stat-content">
-                  <div className="stat-info">
-                    <div className="stat-label">Wishlist Items</div>
-                    <div className="stat-value">{stats.wishlistItems}</div>
-                    <div className="stat-description">
-                      {stats.wishlistItems === 0 ? 
-                        "❤️ Save your favorite items to your wishlist!" : 
-                        `${stats.wishlistItems} item${stats.wishlistItems !== 1 ? 's' : ''} waiting for you!`
-                      }
-                    </div>
-                  </div>
-                  <div className="stat-icon wishlist">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="stat-card" onClick={() => handleNavigation('/cart')} style={{cursor: 'pointer'}} title="View your cart">
-                <div className="stat-content">
-                  <div className="stat-info">
-                    <div className="stat-label">Cart Items</div>
-                    <div className="stat-value">{stats.cartItems}</div>
-                    <div className="stat-description">
-                      {stats.cartItems === 0 ? 
-                        "🛍️ Add some amazing products to your cart!" : 
-                        `${stats.cartItems} item${stats.cartItems !== 1 ? 's' : ''} ready for checkout!`
-                      }
-                    </div>
-                  </div>
-                  <div className="stat-icon cart">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5-5M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                    </svg>
-                  </div>
+              <div className="hero-visual">
+                <div className="visual-container">
+                  <svg className="visual-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                  </svg>
                 </div>
               </div>
             </div>
