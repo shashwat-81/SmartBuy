@@ -999,7 +999,7 @@ html::-webkit-scrollbar {
 }
 
 .btn-secondary {
-  color: #2874f0 !important;        /* White text */
+  color: white !important;        /* White text */
   border: 2px solid white;        /* Optional: white border */
   background-color: transparent;  /* Optional: make it blend in */
   padding: 10px 20px;
@@ -1011,7 +1011,7 @@ html::-webkit-scrollbar {
 
 .btn-secondary:hover {
   background-color: white;
-  color: #7e7878; /* Or any brand accent */
+  color: #d6caca; /* Or any brand accent */
 }
 
 
